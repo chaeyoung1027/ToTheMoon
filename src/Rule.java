@@ -8,19 +8,17 @@ class Rule extends JFrame {
     private Graphics screenGraphic;
 
     // 배경 이미지
-    private Image background = new ImageIcon(ToTheMoon.class.getResource("img/SpaceGameRule1.png")).getImage().getScaledInstance(1920, 1080, 0);;
+    private Image background = new ImageIcon(ToTheMoon.class.getResource("img/SpaceGameRule1.png")).getImage();
 
     // 다음 버튼
     private final Image NextButtonImage = new ImageIcon(ToTheMoon.class.getResource("img/Arrow.png")).getImage();
-    private Image NextButton1 = NextButtonImage.getScaledInstance(167, 125, 0);
-    private ImageIcon NextButton = new ImageIcon(NextButton1);
+    private ImageIcon NextButton = new ImageIcon(NextButtonImage);
 
     private JButton NextJButton = new JButton(NextButton);
 
     // 처음으로 버튼
     private final Image HomeButtonImage = new ImageIcon(ToTheMoon.class.getResource("img/Home.png")).getImage();
-    private Image HomeButton1 = HomeButtonImage.getScaledInstance(270, 79, 0);
-    private ImageIcon HomeButton = new ImageIcon(HomeButton1);
+    private ImageIcon HomeButton = new ImageIcon(HomeButtonImage);
 
     private JButton HomeJButton = new JButton(HomeButton);
 
@@ -32,7 +30,7 @@ class Rule extends JFrame {
         setLayout(null);
 
         // 다음 버튼 생성
-        NextJButton.setBounds(1691, 925, 167, 125);
+        NextJButton.setBounds(1691, 925, 167, 111);
         NextJButton.setBorderPainted(false);
         NextJButton.setContentAreaFilled(false);
         NextJButton.setFocusPainted(false);
@@ -54,7 +52,7 @@ class Rule extends JFrame {
         add(NextJButton);
 
         // 처음으로 버튼 생성
-        HomeJButton.setBounds(62, 945, 270, 79);
+        HomeJButton.setBounds(62, 945, 270, 70);
         HomeJButton.setBorderPainted(false);
         HomeJButton.setContentAreaFilled(false);
         HomeJButton.setFocusPainted(false);
@@ -74,7 +72,6 @@ class Rule extends JFrame {
             }
         });
         add(HomeJButton);
-
     }
 
     // 그리는 함수
@@ -98,19 +95,17 @@ class Rule2 extends JFrame {
     private Graphics screenGraphic;
 
     // 배경 이미지
-    private Image background = new ImageIcon(ToTheMoon.class.getResource("img/SpaceGameRule2.png")).getImage().getScaledInstance(1920, 1080, 0);;
+    private Image background = new ImageIcon(ToTheMoon.class.getResource("img/SpaceGameRule2.png")).getImage();
 
     // 다음 버튼
     private final Image NextButtonImage = new ImageIcon(ToTheMoon.class.getResource("img/Arrow.png")).getImage();
-    private Image NextButton1 = NextButtonImage.getScaledInstance(167, 125, 0);
-    private ImageIcon NextButton = new ImageIcon(NextButton1);
+    private ImageIcon NextButton = new ImageIcon(NextButtonImage);
 
     private JButton NextJButton = new JButton(NextButton);
 
     // 이전 버튼
     private final Image PrevButtonImage = new ImageIcon(ToTheMoon.class.getResource("img/Arrow_reverse.png")).getImage();
-    private Image PrevButton1 = PrevButtonImage.getScaledInstance(167, 125, 0);
-    private ImageIcon PrevButton = new ImageIcon(PrevButton1);
+    private ImageIcon PrevButton = new ImageIcon(PrevButtonImage);
 
     private JButton PrevJButton = new JButton(PrevButton);
 
@@ -122,7 +117,7 @@ class Rule2 extends JFrame {
         setLayout(null);
 
         // 다음 버튼 생성
-        NextJButton.setBounds(1691, 925, 167, 125);
+        NextJButton.setBounds(1691, 925, 167, 111);
         NextJButton.setBorderPainted(false);
         NextJButton.setContentAreaFilled(false);
         NextJButton.setFocusPainted(false);
@@ -144,7 +139,7 @@ class Rule2 extends JFrame {
         add(NextJButton);
 
         // 이전 버튼 생성
-        PrevJButton.setBounds(62, 925, 167, 125);
+        PrevJButton.setBounds(62, 925, 167, 111);
         PrevJButton.setBorderPainted(false);
         PrevJButton.setContentAreaFilled(false);
         PrevJButton.setFocusPainted(false);
@@ -187,19 +182,17 @@ class Rule3 extends JFrame {
     private Graphics screenGraphic;
 
     // 배경 이미지
-    private Image background = new ImageIcon(ToTheMoon.class.getResource("img/SpaceGameRule3.png")).getImage().getScaledInstance(1920, 1080, 0);;
+    private Image background = new ImageIcon(ToTheMoon.class.getResource("img/SpaceGameRule3.png")).getImage();
 
     // 게임 시작 버튼
     private final Image StartButtonImage = new ImageIcon(ToTheMoon.class.getResource("img/GameStart.png")).getImage();
-    private Image StartButton1 = StartButtonImage.getScaledInstance(270, 79, 0);
-    private ImageIcon StartButton = new ImageIcon(StartButton1);
+    private ImageIcon StartButton = new ImageIcon(StartButtonImage);
 
     private JButton StartJButton = new JButton(StartButton);
 
     // 이전 버튼
     private final Image PrevButtonImage = new ImageIcon(ToTheMoon.class.getResource("img/Arrow_reverse.png")).getImage();
-    private Image PrevButton1 = PrevButtonImage.getScaledInstance(167, 125, 0);
-    private ImageIcon PrevButton = new ImageIcon(PrevButton1);
+    private ImageIcon PrevButton = new ImageIcon(PrevButtonImage);
 
     private JButton PrevJButton = new JButton(PrevButton);
 
@@ -211,7 +204,7 @@ class Rule3 extends JFrame {
         setLayout(null);
 
         // 게임 시작 버튼 생성
-        StartJButton.setBounds(1560, 945, 270, 79);
+        StartJButton.setBounds(1560, 945, 270, 71);
         StartJButton.setBorderPainted(false);
         StartJButton.setContentAreaFilled(false);
         StartJButton.setFocusPainted(false);
@@ -233,7 +226,7 @@ class Rule3 extends JFrame {
         add(StartJButton);
 
         // 이전 버튼 생성
-        PrevJButton.setBounds(62, 925, 167, 125);
+        PrevJButton.setBounds(62, 925, 167, 111);
         PrevJButton.setBorderPainted(false);
         PrevJButton.setContentAreaFilled(false);
         PrevJButton.setFocusPainted(false);
