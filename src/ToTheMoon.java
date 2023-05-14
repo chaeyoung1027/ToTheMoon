@@ -10,63 +10,81 @@ import java.awt.event.MouseEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 public class ToTheMoon extends JFrame {
-    // Background Img
     private Image mainBackground;
-    // Start Button
-    private Image startButtonImage;
-    private JButton startJButton;
+    private ImageIcon originalStartButtonIcon;
+    private ImageIcon scaledStartButtonIcon;
+    private JButton startButton;
 
     public ToTheMoon() {
         mainBackground = new ImageIcon(getClass().getResource("img/MainBackground.png")).getImage();
-        startButtonImage = new ImageIcon(getClass().getResource("img/StartButton.png")).getImage();
-        Image startButtonSize = startButtonImage.getScaledInstance(500, 250, Image.SCALE_SMOOTH);
-        ImageIcon startButtonIcon = new ImageIcon(startButtonSize);
-        startJButton = new JButton(startButtonIcon);
+        originalStartButtonIcon = new ImageIcon(getClass().getResource("img/StartButton.png"));
+
+        // 초기 이미지 크기 설정
+        int buttonWidth = originalStartButtonIcon.getIconWidth();
+        int buttonHeight = originalStartButtonIcon.getIconHeight();
+
+        // 이미지 크기를 90%로 축소
+        int scaledWidth = (int) (buttonWidth * 0.6);
+        int scaledHeight = (int) (buttonHeight * 0.6);
+
+        // 이미지 크기 조정
+        scaledStartButtonIcon = new ImageIcon(originalStartButtonIcon.getImage().getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH));
+
+        startButton = new JButton(scaledStartButtonIcon);
+        startButton.setBorderPainted(false);
+        startButton.setContentAreaFilled(false);
+        startButton.setFocusPainted(false);
+        startButton.setOpaque(false);
+        startButton.setBounds(782, 320, scaledWidth, scaledHeight);
+
+        //마우스
+        startButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // 이미지 크기를 90%로 축소
+                int pressedWidth = (int) (scaledWidth * 0.9);
+                int pressedHeight = (int) (scaledHeight * 0.9);
+
+                // 이미지 크기 조정
+                scaledStartButtonIcon = new ImageIcon(originalStartButtonIcon.getImage().getScaledInstance(pressedWidth, pressedHeight, Image.SCALE_SMOOTH));
+
+                startButton.setIcon(scaledStartButtonIcon);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                scaledStartButtonIcon = new ImageIcon(originalStartButtonIcon.getImage().getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH));
+
+                startButton.setIcon(scaledStartButtonIcon);
+            }
+        });
+
+        JPanel contentPane = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(mainBackground, 0, 0, getWidth(), getHeight(), null);
+            }
+        };
+        contentPane.setLayout(null);
+        contentPane.setOpaque(false);
+        contentPane.add(startButton);
 
         setCursor(Cursor.getDefaultCursor());
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("To The Moon");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-        setLocationRelativeTo(null);
-
-        setLayout(null); // 레이아웃 매니저 해제
-
-        // Start Button on Main
-        startJButton.setBounds(700, 400, startButtonSize.getWidth(null), startButtonSize.getHeight(null));
-        startJButton.setBorderPainted(false);
-        startJButton.setContentAreaFilled(false);
-        startJButton.setFocusPainted(false);
-        startJButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                super.mouseEntered(e);
-                // 버튼 이미지 작게 바뀌게 하기
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                super.mouseExited(e);
-                // 버튼 이미지 원래대로 돌아오게 하기
-            }
-        });
-
-        add(startJButton);
-        setVisible(true); // 버튼이 화면에 표시되도록 setVisible(true) 호출
+        setContentPane(contentPane);
+        setVisible(true);
     }
 
-    // 그리는 함수
-    @Override
-    public void paint(Graphics g) {
-        GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(null);
 
-        super.paint(g);
-        g.drawImage(mainBackground, 0, 0, getWidth(), getHeight(), null);
-    }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         new ToTheMoon();
     }
 }
