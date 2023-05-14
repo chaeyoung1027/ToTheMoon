@@ -52,6 +52,7 @@ public class ToTheMoon extends JFrame {
         StartButton.setContentAreaFilled(false);
         StartButton.setFocusPainted(false);
         StartButton.setOpaque(false);
+        StartButton.setBackground(new Color(0, 0, 0, 0)); // 배경을 투명하게 설정
         StartButton.setBounds(782, 320, scaledWidth, scaledHeight);
 
         //startButton 마우스 리스너
@@ -67,7 +68,6 @@ public class ToTheMoon extends JFrame {
 
                 StartButton.setIcon(scaledStartButtonIcon);
             }
-
             @Override
             public void mouseReleased(MouseEvent e) {
                 scaledStartButtonIcon = new ImageIcon(originalStartButtonIcon.getImage().getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH));
@@ -82,6 +82,7 @@ public class ToTheMoon extends JFrame {
         RuleButton.setContentAreaFilled(false);
         RuleButton.setFocusPainted(false);
         RuleButton.setOpaque(false);
+        RuleButton.setBackground(new Color(0, 0, 0, 0)); // 배경을 투명하게 설정
         RuleButton.setBounds(782, 400, scaledWidth, scaledHeight);
 
         //RuleButton 마우스 리스너
@@ -112,11 +113,13 @@ public class ToTheMoon extends JFrame {
         ExitButton.setContentAreaFilled(false);
         ExitButton.setFocusPainted(false);
         ExitButton.setOpaque(false);
+        ExitButton.setBackground(new Color(0, 0, 0, 0)); // 배경을 투명하게 설정
         ExitButton.setBounds(782, 480, scaledWidth, scaledHeight);
         //ExitButton 마우스 리스너
         ExitButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
+
                 // 이미지 크기를 90%로 축소
                 int pressedWidth = (int) (scaledWidth * 0.9);
                 int pressedHeight = (int) (scaledHeight * 0.9);
@@ -157,8 +160,6 @@ public class ToTheMoon extends JFrame {
         setContentPane(contentPane);
         setVisible(true);
     }
-
-
 
     public static void main(String[] args) {
         new ToTheMoon();
