@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-class Rule1 extends JFrame {
+class Rule extends JFrame {
     private Image screenImage;
     private Graphics screenGraphic;
 
@@ -24,7 +24,7 @@ class Rule1 extends JFrame {
 
     private JButton HomeJButton = new JButton(HomeButton);
 
-    public Rule1() {
+    public Rule() {
         setUndecorated(true);
         setSize(1920, 1080);
         setVisible(true);
@@ -159,7 +159,7 @@ class Rule2 extends JFrame {
             }
             @Override
             public void mousePressed(MouseEvent e) {
-                new Rule1();
+                new Rule();
                 setVisible(false);
             }
         });
@@ -268,11 +268,5 @@ class Rule3 extends JFrame {
         g.drawImage(background , 0, 0, null);
         paintComponents(g);
         this.repaint();	// paint 함수로 돌아감
-    }
-}
-
-public class Rule {
-    public static void main(String[] args) {
-        new Rule1();
     }
 }

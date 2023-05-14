@@ -53,7 +53,7 @@ public class ToTheMoon extends JFrame {
         StartButton.setFocusPainted(false);
         StartButton.setOpaque(false);
         StartButton.setBackground(new Color(0, 0, 0, 0)); // 배경을 투명하게 설정
-        StartButton.setBounds(782, 320, scaledWidth, scaledHeight);
+        StartButton.setBounds(811, 320, scaledWidth, scaledHeight);
 
         //startButton 마우스 리스너
         StartButton.addMouseListener(new MouseAdapter() {
@@ -73,6 +73,8 @@ public class ToTheMoon extends JFrame {
                 scaledStartButtonIcon = new ImageIcon(originalStartButtonIcon.getImage().getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH));
 
                 StartButton.setIcon(scaledStartButtonIcon);
+
+
             }
         });
 
@@ -83,7 +85,7 @@ public class ToTheMoon extends JFrame {
         RuleButton.setFocusPainted(false);
         RuleButton.setOpaque(false);
         RuleButton.setBackground(new Color(0, 0, 0, 0)); // 배경을 투명하게 설정
-        RuleButton.setBounds(782, 400, scaledWidth, scaledHeight);
+        RuleButton.setBounds(811, 500, scaledWidth, scaledHeight);
 
         //RuleButton 마우스 리스너
         RuleButton.addMouseListener(new MouseAdapter() {
@@ -104,7 +106,10 @@ public class ToTheMoon extends JFrame {
                 scaledRuleButtonIcon = new ImageIcon(originalRuleButtonIcon.getImage().getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH));
 
                 RuleButton.setIcon(scaledRuleButtonIcon);
+                new Rule();
+                setVisible(false);
             }
+
         });
 
         //ExitButton 설정
@@ -114,7 +119,7 @@ public class ToTheMoon extends JFrame {
         ExitButton.setFocusPainted(false);
         ExitButton.setOpaque(false);
         ExitButton.setBackground(new Color(0, 0, 0, 0)); // 배경을 투명하게 설정
-        ExitButton.setBounds(782, 480, scaledWidth, scaledHeight);
+        ExitButton.setBounds(811, 680, scaledWidth, scaledHeight);
         //ExitButton 마우스 리스너
         ExitButton.addMouseListener(new MouseAdapter() {
             @Override
@@ -132,9 +137,7 @@ public class ToTheMoon extends JFrame {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                scaledExitButtonIcon = new ImageIcon(originalExitButtonIcon.getImage().getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH));
-
-                ExitButton.setIcon(scaledExitButtonIcon);
+                System.exit(0);
             }
         });
 
