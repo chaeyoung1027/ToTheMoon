@@ -11,7 +11,7 @@ public class Rule extends JFrame {
     private Image background = new ImageIcon(ToTheMoon.class.getResource("img/SpaceGameRule1.png")).getImage().getScaledInstance(1920, 1080, 0);;
 
     // 다음 버튼
-    private final Image NextButtonImage = new ImageIcon(ToTheMoon.class.getResource("Arrow.png")).getImage();
+    private final Image NextButtonImage = new ImageIcon(ToTheMoon.class.getResource("img/Arrow.png")).getImage();
     private Image NextButton1 = NextButtonImage.getScaledInstance(167, 125, 0);
     private ImageIcon NextButton = new ImageIcon(NextButton1);
 
