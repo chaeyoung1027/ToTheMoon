@@ -27,6 +27,7 @@ class Rule extends JFrame {
         setSize(1920, 1080);
         setVisible(true);
         setBackground(new Color(0, 0, 0, 0));
+        setLocationRelativeTo(null);
         setLayout(null);
 
         // 다음 버튼 생성
