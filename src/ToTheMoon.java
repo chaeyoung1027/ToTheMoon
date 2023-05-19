@@ -72,6 +72,9 @@ public class ToTheMoon extends JFrame {
                 // 이미지 크기 조정
                 scaledStartButtonIcon = new ImageIcon(originalStartButtonIcon.getImage().getScaledInstance(pressedWidth, pressedHeight, Image.SCALE_SMOOTH));
                 StartButton.setIcon(scaledStartButtonIcon);
+
+                //시작
+                new EarthPart();
             }
             @Override
             public void mouseReleased(MouseEvent e) {
