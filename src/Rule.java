@@ -116,6 +116,7 @@ class Rule2 extends JFrame {
         setVisible(true);
         setBackground(new Color(0, 0, 0, 0));
         setLayout(null);
+        setLocationRelativeTo(null);
 
         // 다음 버튼 생성
         NextJButton.setBounds(1691, 925, 167, 111);
@@ -203,6 +204,7 @@ class Rule3 extends JFrame {
         setVisible(true);
         setBackground(new Color(0, 0, 0, 0));
         setLayout(null);
+        setLocationRelativeTo(null);
 
         // 게임 시작 버튼 생성
         StartJButton.setBounds(1560, 945, 270, 71);
