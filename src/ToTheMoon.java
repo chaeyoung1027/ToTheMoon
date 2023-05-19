@@ -1,9 +1,7 @@
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
-import java.awt.GraphicsEnvironment;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -28,6 +26,14 @@ public class ToTheMoon extends JFrame {
     private JButton ExitButton;
 
     public ToTheMoon() {
+        setUndecorated(true);                           //프레임 바 제거
+        setVisible(true);                               //프레임 표기
+        setSize(1920, 1080);                //프레임 크기 지정
+        setLocationRelativeTo(null);                    //화면 중앙에 위치하도록 설정
+        setBackground(new Color(0, 0, 0, 0));//배경을 투명으로 지정
+        setLayout(null);                                //컴포넌트를 수동으로 배치하기 위한 레이아웃 매니저 null
+
+        //이미지아이콘 추가
         mainBackground = new ImageIcon(getClass().getResource("img/MainBackground.png")).getImage();
         originalStartButtonIcon = new ImageIcon(getClass().getResource("img/StartButton.png"));
         originalRuleButtonIcon = new ImageIcon(getClass().getResource("img/RuleButton.png"));
@@ -65,16 +71,16 @@ public class ToTheMoon extends JFrame {
 
                 // 이미지 크기 조정
                 scaledStartButtonIcon = new ImageIcon(originalStartButtonIcon.getImage().getScaledInstance(pressedWidth, pressedHeight, Image.SCALE_SMOOTH));
-
                 StartButton.setIcon(scaledStartButtonIcon);
             }
             @Override
             public void mouseReleased(MouseEvent e) {
                 scaledStartButtonIcon = new ImageIcon(originalStartButtonIcon.getImage().getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH));
-
                 StartButton.setIcon(scaledStartButtonIcon);
-
-
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             }
         });
 
@@ -97,19 +103,20 @@ public class ToTheMoon extends JFrame {
 
                 // 이미지 크기 조정
                 scaledRuleButtonIcon = new ImageIcon(originalRuleButtonIcon.getImage().getScaledInstance(pressedWidth, pressedHeight, Image.SCALE_SMOOTH));
-
                 RuleButton.setIcon(scaledRuleButtonIcon);
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 scaledRuleButtonIcon = new ImageIcon(originalRuleButtonIcon.getImage().getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH));
-
                 RuleButton.setIcon(scaledRuleButtonIcon);
                 new Rule();
                 setVisible(false);
             }
-
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
         });
 
         //ExitButton 설정
@@ -124,20 +131,21 @@ public class ToTheMoon extends JFrame {
         ExitButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-
                 // 이미지 크기를 90%로 축소
                 int pressedWidth = (int) (scaledWidth * 0.9);
                 int pressedHeight = (int) (scaledHeight * 0.9);
 
                 // 이미지 크기 조정
                 scaledExitButtonIcon = new ImageIcon(scaledExitButtonIcon.getImage().getScaledInstance(pressedWidth, pressedHeight, Image.SCALE_SMOOTH));
-
                 ExitButton.setIcon(scaledExitButtonIcon);
             }
-
             @Override
             public void mouseReleased(MouseEvent e) {
                 System.exit(0);
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             }
         });
 
@@ -148,18 +156,15 @@ public class ToTheMoon extends JFrame {
                 g.drawImage(mainBackground, 0, 0, getWidth(), getHeight(), null);
             }
         };
-        contentPane.setLayout(null);
-        contentPane.setOpaque(false);
+        contentPane.setLayout(null);    //배경 위치 지정을 위한 코드
+
         //버튼 추가
         contentPane.add(StartButton);
         contentPane.add(RuleButton);
         contentPane.add(ExitButton);
 
-        setCursor(Cursor.getDefaultCursor());
-        setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("To The Moon");
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setContentPane(contentPane);
         setVisible(true);
     }
