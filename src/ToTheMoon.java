@@ -75,6 +75,7 @@ public class ToTheMoon extends JFrame {
 
                 //시작
                 new EarthPart();
+                setVisible(false);
             }
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -152,6 +153,7 @@ public class ToTheMoon extends JFrame {
             }
         });
 
+        //배경 그리기
         JPanel contentPane = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
