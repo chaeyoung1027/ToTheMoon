@@ -222,8 +222,8 @@ class Rule3 extends JFrame {
             }
             @Override
             public void mousePressed(MouseEvent e) {
-//                new EarthPart();    // 게임 시작
-//                setVisible(true);
+                new EarthPart();    // 게임 시작
+                setVisible(false);
             }
         });
         add(StartJButton);
