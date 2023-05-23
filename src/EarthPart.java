@@ -114,8 +114,4 @@ public class EarthPart extends JFrame implements KeyListener {
         private static boolean isRightPressed = false;
         private static boolean isLeftPressed = false;
     }
-
-    public static void main(String[] args) {
-        new EarthPart();
-    }
 }
