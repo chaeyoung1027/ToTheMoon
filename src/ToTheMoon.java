@@ -119,7 +119,7 @@ public class ToTheMoon extends JFrame {
             public void mouseReleased(MouseEvent e) {
                 scaledRuleButtonIcon = new ImageIcon(originalRuleButtonIcon.getImage().getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH));
                 RuleButton.setIcon(scaledRuleButtonIcon);
-                new Rule();
+                new EarthRule();
                 setVisible(false);
             }
 
