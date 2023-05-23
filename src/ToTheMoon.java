@@ -43,7 +43,7 @@ public class ToTheMoon extends JFrame {
         int buttonWidth = originalStartButtonIcon.getIconWidth();
         int buttonHeight = originalStartButtonIcon.getIconHeight();
 
-        // 이미지 크기를 원본의 60%로 축소
+        // 이미지 크기를 원본의 50%로 축소
         int scaledWidth = (int) (buttonWidth * 0.5);
         int scaledHeight = (int) (buttonHeight * 0.5);
 
@@ -58,10 +58,10 @@ public class ToTheMoon extends JFrame {
         StartButton.setContentAreaFilled(false);
         StartButton.setFocusPainted(false);
         StartButton.setOpaque(false);
-        StartButton.setBackground(new Color(0, 0, 0, 0)); // 배경을 투명하게 설정
+        StartButton.setBackground(new Color(0, 0, 0, 0));
         StartButton.setBounds(811, 320, scaledWidth, scaledHeight);
 
-        //startButton 마우스 리스너
+        // StartButton에 대한 마우스 이벤트 처리
         StartButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -77,14 +77,21 @@ public class ToTheMoon extends JFrame {
                 new EarthPart();
                 setVisible(false);
             }
+
             @Override
             public void mouseReleased(MouseEvent e) {
                 scaledStartButtonIcon = new ImageIcon(originalStartButtonIcon.getImage().getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH));
                 StartButton.setIcon(scaledStartButtonIcon);
             }
+
             @Override
             public void mouseEntered(MouseEvent e) {
-                setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                StartButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // 커서를 손 모양으로 변경
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                StartButton.setCursor(Cursor.getDefaultCursor()); // 커서를 기본 모양으로 변경
             }
         });
 
@@ -94,18 +101,16 @@ public class ToTheMoon extends JFrame {
         RuleButton.setContentAreaFilled(false);
         RuleButton.setFocusPainted(false);
         RuleButton.setOpaque(false);
-        RuleButton.setBackground(new Color(0, 0, 0, 0)); // 배경을 투명하게 설정
+        RuleButton.setBackground(new Color(0, 0, 0, 0));
         RuleButton.setBounds(811, 500, scaledWidth, scaledHeight);
 
-        //RuleButton 마우스 리스너
+        // RuleButton에 대한 마우스 이벤트 처리
         RuleButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                // 이미지 크기를 90%로 축소
                 int pressedWidth = (int) (scaledWidth * 0.9);
                 int pressedHeight = (int) (scaledHeight * 0.9);
 
-                // 이미지 크기 조정
                 scaledRuleButtonIcon = new ImageIcon(originalRuleButtonIcon.getImage().getScaledInstance(pressedWidth, pressedHeight, Image.SCALE_SMOOTH));
                 RuleButton.setIcon(scaledRuleButtonIcon);
             }
@@ -117,9 +122,15 @@ public class ToTheMoon extends JFrame {
                 new Rule();
                 setVisible(false);
             }
+
             @Override
             public void mouseEntered(MouseEvent e) {
-                setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                RuleButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // 커서를 손 모양으로 변경
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                RuleButton.setCursor(Cursor.getDefaultCursor()); // 커서를 기본 모양으로 변경
             }
         });
 
@@ -129,27 +140,33 @@ public class ToTheMoon extends JFrame {
         ExitButton.setContentAreaFilled(false);
         ExitButton.setFocusPainted(false);
         ExitButton.setOpaque(false);
-        ExitButton.setBackground(new Color(0, 0, 0, 0)); // 배경을 투명하게 설정
+        ExitButton.setBackground(new Color(0, 0, 0, 0));
         ExitButton.setBounds(811, 680, scaledWidth, scaledHeight);
-        //ExitButton 마우스 리스너
+
+        // ExitButton에 대한 마우스 이벤트 처리
         ExitButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                // 이미지 크기를 90%로 축소
                 int pressedWidth = (int) (scaledWidth * 0.9);
                 int pressedHeight = (int) (scaledHeight * 0.9);
 
-                // 이미지 크기 조정
                 scaledExitButtonIcon = new ImageIcon(scaledExitButtonIcon.getImage().getScaledInstance(pressedWidth, pressedHeight, Image.SCALE_SMOOTH));
                 ExitButton.setIcon(scaledExitButtonIcon);
             }
+
             @Override
             public void mouseReleased(MouseEvent e) {
                 System.exit(0);
             }
+
             @Override
             public void mouseEntered(MouseEvent e) {
-                setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                ExitButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // 커서를 손 모양으로 변경
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                ExitButton.setCursor(Cursor.getDefaultCursor()); // 커서를 기본 모양으로 변경
             }
         });
 
@@ -161,7 +178,7 @@ public class ToTheMoon extends JFrame {
                 g.drawImage(mainBackground, 0, 0, getWidth(), getHeight(), null);
             }
         };
-        contentPane.setLayout(null);    //배경 위치 지정을 위한 코드
+        contentPane.setLayout(null);
 
         //버튼 추가
         contentPane.add(StartButton);
