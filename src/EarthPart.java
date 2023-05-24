@@ -7,6 +7,8 @@ public class EarthPart extends JFrame implements KeyListener {
     private Image earthBackground;
     private ImageIcon[] rabbit = new ImageIcon[2];
     private boolean isJumping = false;
+    private boolean isMovingLeft = false;
+    private boolean isMovingRight = false;
     private int rabbitX = 500;
     private int rabbitY = 500;
     private int rabbitMoveSpeed = 200; // Rabbit movement speed (pixels per second)
@@ -19,7 +21,7 @@ public class EarthPart extends JFrame implements KeyListener {
         setLocationRelativeTo(null);
         setBackground(new Color(0, 0, 0, 0));
         setLayout(null);
-        setFocusable(true); // Set focusable to receive key events
+        setFocusable(true);
 
         earthBackground = new ImageIcon(getClass().getResource("img/EarthBackground.png")).getImage();
         ImageIcon rabbitBefore = new ImageIcon(getClass().getResource("img/rabbit.png"));
@@ -28,8 +30,8 @@ public class EarthPart extends JFrame implements KeyListener {
         int rabbitWidth = rabbitBefore.getIconWidth();
         int rabbitHeight = rabbitBefore.getIconHeight();
 
-        int scaledWidth = (int) (rabbitWidth * 0.5);
-        int scaledHeight = (int) (rabbitHeight * 0.5);
+        int scaledWidth = (int) (rabbitWidth * 0.3);
+        int scaledHeight = (int) (rabbitHeight * 0.3);
 
         rabbit[0] = new ImageIcon(rabbitBefore.getImage().getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH));
         rabbit[1] = new ImageIcon(rabbitJumpBefore.getImage().getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH));
@@ -53,35 +55,33 @@ public class EarthPart extends JFrame implements KeyListener {
             long elapsedTime = currentTime - lastKeyPressTime;
 
             if (isJumping) {
-                rabbitY -= 2;
+                rabbitY -= 5;
                 if (rabbitY <= 400) {
                     isJumping = false;
                 }
             } else {
-                rabbitY += 2;
+                rabbitY += 5;
                 if (rabbitY >= 500) {
                     rabbitY = 500;
-                    timer.stop();
                 }
             }
 
-            if (elapsedTime >= 16) { // Adjust the interval if needed for smoother movement
-                double movementDelta = rabbitMoveSpeed * (elapsedTime / 1000.0); // Calculate the position change based on elapsed time
+            double movementDelta = rabbitMoveSpeed * (elapsedTime / 1000.0);
 
-                if (KeyState.isRightPressed) {
-                    rabbitX += movementDelta;
-                    if (rabbitX >= 1420) { // Adjust the right boundary if needed
-                        rabbitX = 1420;
-                    }
-                } else if (KeyState.isLeftPressed) {
-                    rabbitX -= movementDelta;
-                    if (rabbitX <= 20) { // Adjust the left boundary if needed
-                        rabbitX = 20;
-                    }
+            if (isMovingRight) {
+                rabbitX += movementDelta;
+                if (rabbitX >= 1700) {
+                    rabbitX = 1700;
                 }
-                contentPane.repaint();
-                lastKeyPressTime = currentTime;
+            } else if (isMovingLeft) {
+                rabbitX -= movementDelta;
+                if (rabbitX <= 10) {
+                    rabbitX = 10;
+                }
             }
+
+            contentPane.repaint();
+            lastKeyPressTime = currentTime;
         });
     }
 
@@ -94,24 +94,25 @@ public class EarthPart extends JFrame implements KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_SPACE && !isJumping) {
             isJumping = true;
             timer.start();
-        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            KeyState.isRightPressed = true;
-        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            KeyState.isLeftPressed = true;
+        }
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            isMovingRight = true;
+        }
+        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            isMovingLeft = true;
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            KeyState.isRightPressed = false;
+            isMovingRight = false;
         } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            KeyState.isLeftPressed = false;
+            isMovingLeft = false;
         }
     }
 
-    private static class KeyState {
-        private static boolean isRightPressed = false;
-        private static boolean isLeftPressed = false;
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new EarthPart());
     }
 }
