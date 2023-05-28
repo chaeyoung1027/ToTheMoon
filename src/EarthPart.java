@@ -4,7 +4,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class EarthPart extends JFrame implements KeyListener {
-    private Image earthBackground;
+    private Image[] earthBackground = new Image[2];
     private ImageIcon[] rabbit = new ImageIcon[2];
     private ImageIcon[] object = new ImageIcon[5];
 
@@ -25,7 +25,8 @@ public class EarthPart extends JFrame implements KeyListener {
         setLayout(null);
         setFocusable(true);
 
-        earthBackground = new ImageIcon(getClass().getResource("img/EarthBackground.png")).getImage();
+        earthBackground[0] = new ImageIcon(getClass().getResource("img/EarthBackground.png")).getImage();
+        earthBackground[1] = new ImageIcon(getClass().getResource("img/EarthBackground2.png")).getImage();
         ImageIcon rabbitBefore = new ImageIcon(getClass().getResource("img/rabbit.png"));
         ImageIcon rabbitJumpBefore = new ImageIcon(getClass().getResource("img/rabbitJump.png"));
 
@@ -48,7 +49,7 @@ public class EarthPart extends JFrame implements KeyListener {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.drawImage(earthBackground, 0, 0, getWidth(), getHeight(), null);
+                g.drawImage(earthBackground[0], 0, 0, getWidth(), getHeight(), null);
                 g.drawImage(rabbit[isJumping ? 1 : 0].getImage(), rabbitX, rabbitY, null);
             }
         };
