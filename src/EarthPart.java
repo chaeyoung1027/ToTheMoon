@@ -6,10 +6,12 @@ import java.awt.event.KeyListener;
 public class EarthPart extends JFrame implements KeyListener {
     private Image earthBackground;
     private ImageIcon[] rabbit = new ImageIcon[2];
-    private boolean isJumping = false;
-    private boolean isMovingLeft = false;
-    private boolean isMovingRight = false;
-    private int rabbitX = 500;
+    private ImageIcon[] object = new ImageIcon[5];
+
+    private boolean isJumping = false;      //점프 유무를 나타내는 변수
+    private boolean isMovingLeft = false;   //왼쪽 움직임 변수
+    private boolean isMovingRight = false;  //오른쪽 움직임 변수
+    private int rabbitX = 500;              //토끼 위치
     private int rabbitY = 500;
     private int rabbitMoveSpeed = 200; // Rabbit movement speed (pixels per second)
     private Timer timer;
@@ -35,6 +37,12 @@ public class EarthPart extends JFrame implements KeyListener {
 
         rabbit[0] = new ImageIcon(rabbitBefore.getImage().getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH));
         rabbit[1] = new ImageIcon(rabbitJumpBefore.getImage().getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH));
+
+        object[0] = new ImageIcon(getClass().getResource("img/Cloud1.png"));
+        object[1] = new ImageIcon(getClass().getResource("img/Cloud2.png"));
+        object[2] = new ImageIcon(getClass().getResource("img/Cloud3.png"));
+        object[3] = new ImageIcon(getClass().getResource("img/Cloud3.png"));
+        object[4] = new ImageIcon(getClass().getResource("img/Cloud3.png"));
 
         JPanel contentPane = new JPanel() {
             @Override
