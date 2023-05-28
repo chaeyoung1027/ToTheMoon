@@ -44,8 +44,8 @@ public class EarthPart extends JFrame implements KeyListener {
         object[0] = new ImageIcon("img/Cloud1.png");
         object[1] = new ImageIcon("img/Cloud2.png");
         object[2] = new ImageIcon("img/Cloud3.png");
-        object[3] = new ImageIcon("img/Cloud3.png");
-        object[4] = new ImageIcon("img/Cloud3.png");
+        object[3] = new ImageIcon("img/빨간새.png");
+        object[4] = new ImageIcon("img/파란새.png");
 
         JPanel contentPane = new JPanel() {
             @Override
