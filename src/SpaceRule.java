@@ -3,26 +3,20 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-class EarthRule extends JFrame {
+class SpaceRule extends JFrame {
     private Image screenImage;
     private Graphics screenGraphic;
 
     // 배경 이미지
-    private Image background = new ImageIcon(ToTheMoon.class.getResource("img/EarthGameRule1.png")).getImage();
+    private Image background = new ImageIcon(ToTheMoon.class.getResource("img/SpaceRule1.png")).getImage();
 
     // 다음 버튼
-    private final Image NextButtonImage = new ImageIcon(ToTheMoon.class.getResource("img/Earth_arrow.png")).getImage();
+    private final Image NextButtonImage = new ImageIcon(ToTheMoon.class.getResource("img/Space_arrow.png")).getImage();
     private ImageIcon NextButton = new ImageIcon(NextButtonImage);
 
     private JButton NextJButton = new JButton(NextButton);
 
-    // 처음으로 버튼
-    private final Image HomeButtonImage = new ImageIcon(ToTheMoon.class.getResource("img/Earth_home.png")).getImage();
-    private ImageIcon HomeButton = new ImageIcon(HomeButtonImage);
-
-    private JButton HomeJButton = new JButton(HomeButton);
-
-    public EarthRule() {
+    public SpaceRule() {
         setUndecorated(true);
         setSize(1920, 1080);
         setVisible(true);
@@ -46,33 +40,11 @@ class EarthRule extends JFrame {
             }
             @Override
             public void mousePressed(MouseEvent e) {
-                new EarthRule2();    // 다음 화면으로 넘어가기
+                new SpaceRule2();    // 다음 화면으로 넘어가기
                 setVisible(false);
             }
         });
         add(NextJButton);
-
-        // 처음으로 버튼 생성
-        HomeJButton.setBounds(62, 945, 270, 70);
-        HomeJButton.setBorderPainted(false);
-        HomeJButton.setContentAreaFilled(false);
-        HomeJButton.setFocusPainted(false);
-        HomeJButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                setCursor(new Cursor(Cursor.HAND_CURSOR));
-            }
-            @Override
-            public void mouseExited(MouseEvent e) {
-                setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            }
-            @Override
-            public void mousePressed(MouseEvent e) {
-                new ToTheMoon();    // 홈 화면으로 넘어가기
-                setVisible(false);
-            }
-        });
-        add(HomeJButton);
     }
 
     // 그리는 함수
@@ -91,26 +63,26 @@ class EarthRule extends JFrame {
     }
 }
 
-class EarthRule2 extends JFrame {
+class SpaceRule2 extends JFrame {
     private Image screenImage;
     private Graphics screenGraphic;
 
     // 배경 이미지
-    private Image background = new ImageIcon(ToTheMoon.class.getResource("img/EarthGameRule2.png")).getImage();
+    private Image background = new ImageIcon(ToTheMoon.class.getResource("img/SpaceGameRule2.png")).getImage();
 
     // 다음 버튼
-    private final Image NextButtonImage = new ImageIcon(ToTheMoon.class.getResource("img/Earth_arrow.png")).getImage();
+    private final Image NextButtonImage = new ImageIcon(ToTheMoon.class.getResource("img/Space_arrow.png")).getImage();
     private ImageIcon NextButton = new ImageIcon(NextButtonImage);
 
     private JButton NextJButton = new JButton(NextButton);
 
     // 이전 버튼
-    private final Image PrevButtonImage = new ImageIcon(ToTheMoon.class.getResource("img/Earth_arrow_reverse.png")).getImage();
+    private final Image PrevButtonImage = new ImageIcon(ToTheMoon.class.getResource("img/Space_arrow_reverse.png")).getImage();
     private ImageIcon PrevButton = new ImageIcon(PrevButtonImage);
 
     private JButton PrevJButton = new JButton(PrevButton);
 
-    public EarthRule2() {
+    public SpaceRule2() {
         setUndecorated(true);
         setSize(1920, 1080);
         setVisible(true);
@@ -134,7 +106,7 @@ class EarthRule2 extends JFrame {
             }
             @Override
             public void mousePressed(MouseEvent e) {
-                new EarthRule3();
+                new SpaceRule3();
                 setVisible(false);
             }
         });
@@ -156,7 +128,7 @@ class EarthRule2 extends JFrame {
             }
             @Override
             public void mousePressed(MouseEvent e) {
-                new EarthRule();
+                new SpaceRule();
                 setVisible(false);
             }
         });
@@ -179,26 +151,26 @@ class EarthRule2 extends JFrame {
     }
 }
 
-class EarthRule3 extends JFrame {
+class SpaceRule3 extends JFrame {
     private Image screenImage;
     private Graphics screenGraphic;
 
     // 배경 이미지
-    private Image background = new ImageIcon(ToTheMoon.class.getResource("img/EarthGameRule3.png")).getImage();
+    private Image background = new ImageIcon(ToTheMoon.class.getResource("img/SpaceGameRule3.png")).getImage();
 
     // 다음 버튼
-    private final Image NextButtonImage = new ImageIcon(ToTheMoon.class.getResource("img/Earth_arrow.png")).getImage();
+    private final Image NextButtonImage = new ImageIcon(ToTheMoon.class.getResource("img/Space_arrow.png")).getImage();
     private ImageIcon NextButton = new ImageIcon(NextButtonImage);
 
     private JButton NextJButton = new JButton(NextButton);
 
     // 이전 버튼
-    private final Image PrevButtonImage = new ImageIcon(ToTheMoon.class.getResource("img/Earth_arrow_reverse.png")).getImage();
+    private final Image PrevButtonImage = new ImageIcon(ToTheMoon.class.getResource("img/Space_arrow_reverse.png")).getImage();
     private ImageIcon PrevButton = new ImageIcon(PrevButtonImage);
 
     private JButton PrevJButton = new JButton(PrevButton);
 
-    public EarthRule3() {
+    public SpaceRule3() {
         setUndecorated(true);
         setSize(1920, 1080);
         setVisible(true);
@@ -222,7 +194,7 @@ class EarthRule3 extends JFrame {
             }
             @Override
             public void mousePressed(MouseEvent e) {
-                new EarthRule4();
+                new SpaceRule4();
                 setVisible(false);
             }
         });
@@ -244,7 +216,7 @@ class EarthRule3 extends JFrame {
             }
             @Override
             public void mousePressed(MouseEvent e) {
-                new EarthRule2();
+                new SpaceRule2();
                 setVisible(false);
             }
         });
@@ -267,26 +239,26 @@ class EarthRule3 extends JFrame {
     }
 }
 
-class EarthRule4 extends JFrame {
+class SpaceRule4 extends JFrame {
     private Image screenImage;
     private Graphics screenGraphic;
 
     // 배경 이미지
-    private Image background = new ImageIcon(ToTheMoon.class.getResource("img/EarthGameRule4.png")).getImage();
+    private Image background = new ImageIcon(ToTheMoon.class.getResource("img/SpaceGameRule4.png")).getImage();
 
     // 게임 시작 버튼
-    private final Image StartButtonImage = new ImageIcon(ToTheMoon.class.getResource("img/Earth_gameStart.png")).getImage();
+    private final Image StartButtonImage = new ImageIcon(ToTheMoon.class.getResource("img/Space_gameStart.png")).getImage();
     private ImageIcon StartButton = new ImageIcon(StartButtonImage);
 
     private JButton StartJButton = new JButton(StartButton);
 
     // 이전 버튼
-    private final Image PrevButtonImage = new ImageIcon(ToTheMoon.class.getResource("img/Earth_arrow_reverse.png")).getImage();
+    private final Image PrevButtonImage = new ImageIcon(ToTheMoon.class.getResource("img/Space_arrow_reverse.png")).getImage();
     private ImageIcon PrevButton = new ImageIcon(PrevButtonImage);
 
     private JButton PrevJButton = new JButton(PrevButton);
 
-    public EarthRule4() {
+    public SpaceRule4() {
         setUndecorated(true);
         setSize(1920, 1080);
         setVisible(true);
@@ -310,7 +282,7 @@ class EarthRule4 extends JFrame {
             }
             @Override
             public void mousePressed(MouseEvent e) {
-                new EarthPart();    // 게임 시작
+                new SpacePart();    // 게임 시작
                 setVisible(false);
             }
         });
@@ -332,7 +304,7 @@ class EarthRule4 extends JFrame {
             }
             @Override
             public void mousePressed(MouseEvent e) {
-                new EarthRule3();
+                new SpaceRule3();
                 setVisible(false);
             }
         });
