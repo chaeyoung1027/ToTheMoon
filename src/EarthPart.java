@@ -2,18 +2,20 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class EarthPart extends JFrame implements KeyListener {
     private Image[] earthBackground = new Image[2];
     private ImageIcon[] rabbit = new ImageIcon[2];
     private ImageIcon[] object = new ImageIcon[5];
 
-    private boolean isJumping = false;      //점프 유무를 나타내는 변수
-    private boolean isMovingLeft = false;   //왼쪽 움직임 변수
-    private boolean isMovingRight = false;  //오른쪽 움직임 변수
-    private int rabbitX = 500;              //토끼 위치
+    private boolean isJumping = false;
+    private boolean isMovingLeft = false;
+    private boolean isMovingRight = false;
+    private int rabbitX = 500;
     private int rabbitY = 500;
-    private int rabbitMoveSpeed = 200; // Rabbit movement speed (pixels per second)
+    private int rabbitMoveSpeed = 200;
     private Timer timer;
     private long lastKeyPressTime = 0;
 
@@ -39,11 +41,11 @@ public class EarthPart extends JFrame implements KeyListener {
         rabbit[0] = new ImageIcon(rabbitBefore.getImage().getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH));
         rabbit[1] = new ImageIcon(rabbitJumpBefore.getImage().getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH));
 
-        object[0] = new ImageIcon(getClass().getResource("img/Cloud1.png"));
-        object[1] = new ImageIcon(getClass().getResource("img/Cloud2.png"));
-        object[2] = new ImageIcon(getClass().getResource("img/Cloud3.png"));
-        object[3] = new ImageIcon(getClass().getResource("img/Cloud3.png"));
-        object[4] = new ImageIcon(getClass().getResource("img/Cloud3.png"));
+        object[0] = new ImageIcon("img/Cloud1.png");
+        object[1] = new ImageIcon("img/Cloud2.png");
+        object[2] = new ImageIcon("img/Cloud3.png");
+        object[3] = new ImageIcon("img/Cloud3.png");
+        object[4] = new ImageIcon("img/Cloud3.png");
 
         JPanel contentPane = new JPanel() {
             @Override
@@ -58,6 +60,16 @@ public class EarthPart extends JFrame implements KeyListener {
         setContentPane(contentPane);
         setVisible(true);
         addKeyListener(this);
+
+        contentPane.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1 && !isJumping) {
+                    isJumping = true;
+                    timer.start();
+                }
+            }
+        });
 
         timer = new Timer(16, e -> {
             long currentTime = System.currentTimeMillis();
@@ -100,28 +112,26 @@ public class EarthPart extends JFrame implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_SPACE && !isJumping) {
-            isJumping = true;
-            timer.start();
-        }
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            isMovingRight = true;
-        }
-        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+        if (e.getKeyCode() == KeyEvent.VK_A) {
             isMovingLeft = true;
+        } else if (e.getKeyCode() == KeyEvent.VK_D) {
+            isMovingRight = true;
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            isMovingRight = false;
-        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+        if (e.getKeyCode() == KeyEvent.VK_A) {
             isMovingLeft = false;
+        } else if (e.getKeyCode() == KeyEvent.VK_D) {
+            isMovingRight = false;
         }
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new EarthPart());
+        SwingUtilities.invokeLater(() -> {
+            EarthPart earthPart = new EarthPart();
+            earthPart.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        });
     }
 }
