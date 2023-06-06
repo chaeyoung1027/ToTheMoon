@@ -21,11 +21,14 @@ public class SpacePart extends JFrame implements KeyListener {
     private int yPos2; // 두 번째 배경 이미지의 y 좌표
 
     // 우주선
-    private Image spaceship1 = new ImageIcon(ToTheMoon.class.getResource("img/Spaceship_fire.png")).getImage();
-    private Image spaceship2 = new ImageIcon(ToTheMoon.class.getResource("img/Spaceship.png")).getImage();
+    private Image[] spaceshipImages = {
+            new ImageIcon(ToTheMoon.class.getResource("img/Spaceship_fire.png")).getImage(),
+            new ImageIcon(ToTheMoon.class.getResource("img/Spaceship_fire2.png")).getImage()
+    };
+    private int spaceshipImageIndex = 0;
 
-    private ImageIcon ship1 = new ImageIcon(spaceship1);
-    private ImageIcon ship2 = new ImageIcon(spaceship2);
+    private ImageIcon ship1 = new ImageIcon(spaceshipImages[0]);
+    private ImageIcon ship2 = new ImageIcon(spaceshipImages[1]);
 
     private int spaceshipX = 810; // 초기 X 좌표
     private int spaceshipY = 750; // 초기 Y 좌표
@@ -84,6 +87,28 @@ public class SpacePart extends JFrame implements KeyListener {
         // 배경 이미지 설정
         yPos1 = 0;
         yPos2 = -background.getHeight(null); // 두 번째 배경 이미지는 첫 번째 배경 이미지의 위쪽에 위치
+
+        // --- 우주선 애니메이션 ---
+        // 우주선 이미지 설정
+        spaceshipImageIndex = 0;
+
+        // 이미지 라벨 생성
+        imageLabel = new JLabel();
+        imageLabel.setBounds(spaceshipX, spaceshipY, spaceshipImages[0].getWidth(null), spaceshipImages[0].getHeight(null));
+        imageLabel.setIcon(ship1);
+        add(imageLabel);
+
+        // 이미지 변경 타이머 설정
+        Timer imageTimer = new Timer(200, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                spaceshipImageIndex = (spaceshipImageIndex + 1) % spaceshipImages.length;
+                Image currentSpaceshipImage = spaceshipImages[spaceshipImageIndex];
+                ship1.setImage(currentSpaceshipImage);
+                imageLabel.setIcon(ship1);
+            }
+        });
+        imageTimer.start();
 
         // --- 장애물 생성 ---
         // 인공위성 설정
@@ -192,7 +217,7 @@ public class SpacePart extends JFrame implements KeyListener {
         g.drawImage(background, 0, yPos1, null); // 첫 번째 배경 이미지 그리기 위치에 yPos1 변수를 사용하여 스크롤 효과 적용
         g.drawImage(background, 0, yPos2, null); // 두 번째 배경 이미지 그리기 위치에 yPos2 변수를 사용하여 스크롤 효과 적용
 
-        g.drawImage(spaceship1, spaceshipX, spaceshipY, null);
+        g.drawImage(spaceshipImages[spaceshipImageIndex], spaceshipX, spaceshipY, null);
         g.drawImage(currentJunkImage, junkX, junkY, junkWidth, junkHeight, null);
         g.drawImage(currentMeteorImage, meteorX, meteorY, null);
         this.repaint();	// paint 함수로 돌아감
