@@ -2,31 +2,28 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
-public class EarthPart extends JFrame implements KeyListener {
-    private Image[] earthBackground = new Image[2];
-    private ImageIcon[] rabbit = new ImageIcon[2];
-    private ImageIcon[] object = new ImageIcon[5];
+public class EarthPart extends JFrame {
+    private Image earthBackground;
+    private Image[] rightRabbit = new Image[2];
+    private Image[] leftRabbit = new Image[2];
 
     private boolean isJumping = false;
     private boolean isMovingLeft = false;
     private boolean isMovingRight = false;
     private int rabbitX = 500;
-    private int rabbitY = 500;
-    private int rabbitMoveSpeed = 200;
-    private Timer timer;
-    private long lastKeyPressTime = 0;
+    private int rabbitY = 630;
+    private int rabbitMoveSpeed = 5;
 
-    private List<Point> objectPositions = new ArrayList<>(); // 객체의 위치를 저장하는 리스트
-    private List<Integer> objectTypes = new ArrayList<>(); // 객체의 종류를 저장하는 리스트
+    private int scaledWidth;
+    private int scaledHeight;
 
-    private int currentObjectX = -1; // 현재 토끼가 올라간 객체의 x 좌표
-    private int currentObjectY = -1; // 현재 토끼가 올라간 객체의 y 좌표
+    private int backgroundX = 0; // 배경의 위치
+
+    private int frameCount = 0;
+    private int frameDelay = 10; // 0.1초에 한 번씩 변경 (10ms * 16 = 160ms)
+
+    private int backgroundSpeed = 4; // 배경 이동 속도 : 숫자가 높을수록 빠름
 
     public EarthPart() {
         setUndecorated(true);
@@ -35,186 +32,130 @@ public class EarthPart extends JFrame implements KeyListener {
         setBackground(new Color(0, 0, 0, 0));
         setLayout(null);
         setFocusable(true);
-
-        earthBackground[0] = new ImageIcon(getClass().getResource("img/EarthBackground.png")).getImage();
-        earthBackground[1] = new ImageIcon(getClass().getResource("img/EarthBackground2.png")).getImage();
-        ImageIcon rabbitBefore = new ImageIcon(getClass().getResource("img/rabbit.png"));
-        ImageIcon rabbitJumpBefore = new ImageIcon(getClass().getResource("img/rabbitJump.png"));
-
-        int rabbitWidth = rabbitBefore.getIconWidth();
-        int rabbitHeight = rabbitBefore.getIconHeight();
-
-        int scaledWidth = (int) (rabbitWidth * 0.3);
-        int scaledHeight = (int) (rabbitHeight * 0.3);
-
-        rabbit[0] = new ImageIcon(rabbitBefore.getImage().getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH));
-        rabbit[1] = new ImageIcon(rabbitJumpBefore.getImage().getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH));
-
-        object[0] = new ImageIcon(getClass().getResource("img/BlackCloud.png"));
-        object[1] = new ImageIcon(getClass().getResource("img/Cloud2.png"));
-        object[2] = new ImageIcon(getClass().getResource("img/Cloud3.png"));
-        object[3] = new ImageIcon(getClass().getResource("img/빨간새.png"));
-        object[4] = new ImageIcon(getClass().getResource("img/파란새.png"));
-
-        // 배경이 자연스럽게 지어지는 코드
-        JPanel contentPane = new JPanel() {
-            private int backgroundOffset = 0; // 배경 이미지의 Y축 오프셋 값
-
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                // 배경 이미지 그리기
-                g.drawImage(earthBackground[0], 0, backgroundOffset, getWidth(), getHeight(), null);
-                g.drawImage(earthBackground[1], 0, backgroundOffset - getHeight(), getWidth(), getHeight(), null);
-                // 토끼 그리기
-                g.drawImage(rabbit[isJumping ? 1 : 0].getImage(), rabbitX, rabbitY, null);
-                // object 그리기
-                drawObjects(g);
-            }
-
-            private void drawObjects(Graphics g) {
-                for (int i = 0; i < objectPositions.size(); i++) {
-                    Point position = objectPositions.get(i);
-                    int x = position.x;
-                    int y = position.y;
-
-                    int objectType = objectTypes.get(i);
-
-                    g.drawImage(object[objectType].getImage(), x, y, null);
-
-                    // 객체에 올라갔을 때의 처리
-                    if (currentObjectX == x && currentObjectY == y) {
-                        // 올라간 객체에 대한 추가 동작을 수행
-                        // 예: currentObjectX와 currentObjectY를 사용하여 특정 동작을 수행하거나 상태를 변경
-                    }
-                }
-            }
-        };
-
-        contentPane.setLayout(null);
-        setContentPane(contentPane);
         setVisible(true);
-        addKeyListener(this);
 
-        contentPane.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON1 && !isJumping) {
-                    isJumping = true;
-                    timer.start();
-                }
+        earthBackground = new ImageIcon(getClass().getResource("img/EarthBackground.png")).getImage();
+        Image rightRabbitRun1 = new ImageIcon(getClass().getResource("img/rabbit_run1.png")).getImage();
+        Image rightRabbitRun2 = new ImageIcon(getClass().getResource("img/rabbit_run2.png")).getImage();
+
+        Image leftRabbitRun1 = new ImageIcon(getClass().getResource("img/left_rabbit_run1.png")).getImage();
+        Image leftRabbitRun2 = new ImageIcon(getClass().getResource("img/left_rabbit_run2.png")).getImage();
+
+        int rabbitWidth = rightRabbitRun1.getWidth(null);
+        int rabbitHeight = rightRabbitRun1.getHeight(null);
+
+        scaledWidth = (int) (rabbitWidth * 0.5);
+        scaledHeight = (int) (rabbitHeight * 0.5);
+
+        rightRabbit[0] = rightRabbitRun1.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
+        rightRabbit[1] = rightRabbitRun2.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
+
+        leftRabbit[0] = leftRabbitRun1.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
+        leftRabbit[1] = leftRabbitRun2.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
+
+        addKeyListener(new MyKeyListener());
+        setContentPane(new MyPanel());
+    }
+
+    private class MyPanel extends JPanel {
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            int bgWidth = earthBackground.getWidth(null);
+            int bgHeight = earthBackground.getHeight(null);
+            int panelWidth = getWidth();
+
+            backgroundX -= backgroundSpeed; // 배경의 위치 업데이트
+
+            if (backgroundX < -bgWidth) {
+                backgroundX = 0; // 배경이 화면 밖으로 나가면 위치를 초기화합니다.
             }
-        });
 
-        timer = new Timer(16, e -> {
-            long currentTime = System.currentTimeMillis();
-            long elapsedTime = currentTime - lastKeyPressTime;
-
-            if (isJumping) {
-                rabbitY -= 5;
-                if (rabbitY <= 400) {
-                    isJumping = false;
-                }
-            } else {
-                rabbitY += 5;
-                if (rabbitY >= 500) {
-                    rabbitY = 500;
-                }
+            g.drawImage(earthBackground, backgroundX, 0, null);
+            if (backgroundX < panelWidth - bgWidth) {
+                g.drawImage(earthBackground, backgroundX + bgWidth, 0, null); // 다른 배경 이미지를 그립니다.
             }
 
-            double movementDelta = rabbitMoveSpeed * (elapsedTime / 1000.0);
+            g.drawImage(getCurrentRabbitImage(), rabbitX, rabbitY, null);
+        }
+    }
 
+    private class MyKeyListener implements KeyListener {
+        @Override
+        public void keyTyped(KeyEvent e) {
+            // 키 입력 시 처리할 내용을 여기에 작성
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            // 키 눌림 이벤트 처리
+            if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                isMovingRight = true;
+                isMovingLeft = false; //오른쪽으로 이동할 때 왼쪽 이동 상태를 해제
+            } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                isMovingLeft = true; // 추가: 왼쪽으로 이동할 때 왼쪽 이동 상태를 설정합니다.
+                isMovingRight = false; //왼쪽으로 이동할 때 오른쪽 이동 상태를 해제
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            // 키 놓임 이벤트 처리
+            if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                isMovingRight = false;
+            } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                isMovingLeft = false;
+            }
+        }
+    }
+
+    public void update() {
+        boolean isMoving = isMovingRight || isMovingLeft; //토끼가 이동 중인지 확인
+
+        if (isMoving) {
             if (isMovingRight) {
-                rabbitX += movementDelta;
-                if (rabbitX >= 1700) {
-                    rabbitX = 1700;
-                }
+                rabbitX += rabbitMoveSpeed;
             } else if (isMovingLeft) {
-                rabbitX -= movementDelta;
-                if (rabbitX <= 10) {
-                    rabbitX = 10;
-                }
+                rabbitX -= rabbitMoveSpeed; //왼쪽으로 이동할 때 토끼의 위치를 왼쪽으로 변경합니다.
             }
+        } else {
+            rabbitX-=backgroundSpeed;
+        }
 
-            // 객체와 충돌 감지
-            checkCollision();
+        frameCount++;
+        if (frameCount % frameDelay == 0 && isMoving) { // 오른쪽 또는 왼쪽으로 이동 중에만 이미지 변경
+            frameCount = 0;
+            toggleRabbitImage();
+        }
 
-            contentPane.repaint();
-            lastKeyPressTime = currentTime;
-        });
-
-        generateObjectPositions(); // 객체의 초기 위치 생성
+        repaint();
     }
 
-    private void generateObjectPositions() {
-        int objectCount = 5; // 객체의 개수
-        int minSpacing = 200; // 객체 사이의 최소 간격
-        int maxSpacing = 400; // 객체 사이의 최대 간격
-        int maxY = 800; // 객체의 y 좌표 최댓값
-
-        int currentX = 0;
-
-        Random random = new Random();
-
-        for (int i = 0; i < objectCount; i++) {
-            int spacing = random.nextInt(maxSpacing - minSpacing + 1) + minSpacing; // 랜덤한 간격 계산
-            currentX += spacing;
-            int y = random.nextInt(maxY + 1); // 랜덤한 y 좌표 계산
-
-            objectPositions.add(new Point(currentX, y));
-            objectTypes.add(random.nextInt(object.length));
+    private void toggleRabbitImage() {
+        if (isMovingRight) {
+            Image temp = rightRabbit[0];
+            rightRabbit[0] = rightRabbit[1];
+            rightRabbit[1] = temp;
+        } else if (isMovingLeft) {
+            Image temp = leftRabbit[0];
+            leftRabbit[0] = leftRabbit[1];
+            leftRabbit[1] = temp;
         }
     }
 
-    private void checkCollision() {
-        Rectangle rabbitRect = new Rectangle(rabbitX, rabbitY + rabbit[0].getIconHeight(), rabbit[0].getIconWidth(), 1);
-
-        for (int i = 0; i < objectPositions.size(); i++) {
-            Point position = objectPositions.get(i);
-            int objectType = objectTypes.get(i);
-            int objectWidth = object[objectType].getIconWidth();
-            int objectHeight = object[objectType].getIconHeight();
-
-            Rectangle objectRect = new Rectangle(position.x, position.y, objectWidth, objectHeight);
-
-            if (rabbitRect.intersects(objectRect)) {
-                rabbitY = objectRect.y - rabbit[0].getIconHeight();
-                currentObjectX = position.x;
-                currentObjectY = position.y;
-                break;
-            } else {
-                currentObjectX = -1;
-                currentObjectY = -1;
-            }
-        }
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_A) {
-            isMovingLeft = true;
-        } else if (e.getKeyCode() == KeyEvent.VK_D) {
-            isMovingRight = true;
-        }
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_A) {
-            isMovingLeft = false;
-        } else if (e.getKeyCode() == KeyEvent.VK_D) {
-            isMovingRight = false;
-        }
+    private Image getCurrentRabbitImage() {
+        return isMovingLeft ? leftRabbit[1] : rightRabbit[isMovingRight ? 1 : 0];
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             EarthPart earthPart = new EarthPart();
             earthPart.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            earthPart.setVisible(true);
+
+            // 추가: 주기적으로 업데이트 메소드 호출
+            Timer timer = new Timer(16, e -> earthPart.update());
+            timer.start();
         });
     }
 }
