@@ -7,8 +7,8 @@ public class EarthPart extends JFrame {
     private Image earthBackground;
     private Image[] rightRabbit = new Image[3];
     private Image[] leftRabbit = new Image[3];
-    private Image rabbitBetween;
-    private Image leftRabbitBetween;
+    private Image rightRabbitJump;
+    private Image leftRabbitJump;
 
     private boolean isJumping = false;
     private boolean isMovingLeft = false;
@@ -17,10 +17,9 @@ public class EarthPart extends JFrame {
     private int rabbitY = 630;
     private int rabbitMoveSpeed = 5;
 
-    private int scaledWidth;
-    private int scaledHeight;
-
     private int backgroundX = 0; // 배경의 위치
+
+    private int scaledWidth;
 
     private int frameCount = 0;
     private int frameDelay = 5; // 토끼 이미지 변경 속도
@@ -39,20 +38,26 @@ public class EarthPart extends JFrame {
         earthBackground = new ImageIcon(getClass().getResource("img/EarthBackground.png")).getImage();
 
         Image rightRabbitRun1 = new ImageIcon(getClass().getResource("img/rabbit_run1.png")).getImage();
-        rabbitBetween = new ImageIcon(getClass().getResource("img/rabbit_between.png")).getImage();
+        Image rabbitBetween = new ImageIcon(getClass().getResource("img/rabbit_between.png")).getImage();
         Image rightRabbitRun2 = new ImageIcon(getClass().getResource("img/rabbit_run2.png")).getImage();
-        Image rightRabbitJump = new ImageIcon(getClass().getResource("img/rabbit_jump.png")).getImage();
+        rightRabbitJump = new ImageIcon(getClass().getResource("img/rabbit_jump.png")).getImage();
 
         Image leftRabbitRun1 = new ImageIcon(getClass().getResource("img/left_rabbit_run1.png")).getImage();
-        leftRabbitBetween = new ImageIcon(getClass().getResource("img/left_rabbit_between.png")).getImage();
+        Image leftRabbitBetween = new ImageIcon(getClass().getResource("img/left_rabbit_between.png")).getImage();
         Image leftRabbitRun2 = new ImageIcon(getClass().getResource("img/left_rabbit_run2.png")).getImage();
-        Image leftRabbitJump = new ImageIcon(getClass().getResource("img/left_rabbit_jump.png")).getImage();
+        leftRabbitJump = new ImageIcon(getClass().getResource("img/left_rabbit_jump.png")).getImage();
 
         int rabbitWidth = rightRabbitRun1.getWidth(null);
         int rabbitHeight = rightRabbitRun1.getHeight(null);
 
-        scaledWidth = (int) (rabbitWidth * 0.5);
-        scaledHeight = (int) (rabbitHeight * 0.5);
+        int scaledWidth = (int) (rabbitWidth * 0.5);
+        int scaledHeight = (int) (rabbitHeight * 0.5);
+
+        int jumpWidth = leftRabbitJump.getWidth(null);
+        int jumpHeight = leftRabbitJump.getHeight(null);
+
+        int jumpScaledWidth = (int) (jumpWidth * 0.5);
+        int jumpScaledHeight = (int) (jumpHeight * 0.5);
 
         rightRabbit[0] = rightRabbitRun1.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
         rightRabbit[1] = rabbitBetween.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
@@ -61,6 +66,9 @@ public class EarthPart extends JFrame {
         leftRabbit[0] = leftRabbitRun1.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
         leftRabbit[1] = leftRabbitBetween.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
         leftRabbit[2] = leftRabbitRun2.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
+
+        rightRabbitJump = rightRabbitJump.getScaledInstance(jumpScaledWidth, jumpScaledHeight, Image.SCALE_SMOOTH);
+        leftRabbitJump = leftRabbitJump.getScaledInstance(jumpScaledWidth, jumpScaledHeight, Image.SCALE_SMOOTH);
 
         addKeyListener(new MyKeyListener());
         setContentPane(new MyPanel());
@@ -97,25 +105,51 @@ public class EarthPart extends JFrame {
 
         @Override
         public void keyPressed(KeyEvent e) {
-            // 키 눌림 이벤트 처리
             if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
                 isMovingRight = true;
-                isMovingLeft = false; // 오른쪽으로 이동할 때 왼쪽 이동 상태를 해제
             } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                isMovingLeft = true; //왼쪽으로 이동할 때 왼쪽 이동 상태를 설정합니다.
-                isMovingRight = false; // 왼쪽으로 이동할 때 오른쪽 이동 상태를 해제
+                isMovingLeft = true;
+            } else if (e.getKeyCode() == KeyEvent.VK_SPACE && !isJumping) {
+                isJumping = true;
+                new Thread(() -> jump()).start();
             }
         }
 
         @Override
         public void keyReleased(KeyEvent e) {
-            // 키 놓임 이벤트 처리
             if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
                 isMovingRight = false;
             } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
                 isMovingLeft = false;
             }
         }
+    }
+
+    public void jump() {
+        int jumpHeight = 150; // 점프 높이
+        int jumpSpeed = 5; // 점프 속도
+        int initialY = rabbitY;
+
+        for (int i = 0; i < jumpHeight; i += jumpSpeed) {
+            rabbitY = initialY - i;
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        for (int i = jumpHeight; i > 0; i -= jumpSpeed) {
+            rabbitY = initialY - i;
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        rabbitY = initialY;
+        isJumping = false;
     }
 
     public void update() {
@@ -163,11 +197,11 @@ public class EarthPart extends JFrame {
 
     private Image getCurrentRabbitImage() {
         if (isMovingLeft) {
-            return leftRabbit[1];
+            return isJumping ? leftRabbitJump : leftRabbit[1];
         } else if (isMovingRight) {
-            return rightRabbit[1];
+            return isJumping ? rightRabbitJump : rightRabbit[1];
         } else {
-            return rightRabbit[1];
+            return isJumping ? rightRabbitJump : rightRabbit[1];
         }
     }
 
