@@ -20,7 +20,7 @@ public class EarthPart extends JFrame {
     private boolean isSliding = false;
     private int rabbitX = 500;
     private int rabbitY = 630;
-    private int rabbitMoveSpeed = 5;
+    private int rabbitMoveSpeed = 2;
 
     private int backgroundX = 0; // 배경의 위치
 
@@ -29,7 +29,7 @@ public class EarthPart extends JFrame {
     private int frameCount = 0;
     private int frameDelay = 5; // 토끼 이미지 변경 속도
 
-    private int backgroundSpeed = 4; // 배경 이동 속도 : 숫자가 높을수록 빠름
+    private int backgroundSpeed = 5; // 배경 이동 속도 : 숫자가 높을수록 빠름
 
     private int playerHeart = 5;
 
