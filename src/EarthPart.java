@@ -15,6 +15,7 @@ public class EarthPart extends JFrame {
     private boolean isJumping = false;
     private boolean isMovingLeft = false;
     private boolean isMovingRight = false;
+    private boolean isSliding = false;
     private int rabbitX = 500;
     private int rabbitY = 630;
     private int rabbitMoveSpeed = 5;
@@ -50,7 +51,6 @@ public class EarthPart extends JFrame {
         Image leftRabbitRun2 = new ImageIcon(getClass().getResource("img/left_rabbit_run2.png")).getImage();
         leftRabbitJump = new ImageIcon(getClass().getResource("img/left_rabbit_jump.png")).getImage();
         leftRabbitSliding = new ImageIcon(getClass().getResource("img/left_rabbit_sliding.png")).getImage();
-
 
         int rabbitWidth = rightRabbitRun1.getWidth(null);
         int rabbitHeight = rightRabbitRun1.getHeight(null);
@@ -107,9 +107,22 @@ public class EarthPart extends JFrame {
                 g.drawImage(earthBackground, backgroundX + bgWidth, 0, null); // 다른 배경 이미지를 그립니다.
             }
 
-            g.drawImage(getCurrentRabbitImage(), rabbitX, rabbitY, null);
+            Image currentRabbitImage = getCurrentRabbitImage();
+            int rabbitWidth = currentRabbitImage.getWidth(null);
+            int rabbitHeight = currentRabbitImage.getHeight(null);
+
+            int slidingOffsetY = 80; // 슬라이딩 이미지의 Y 좌표 조절 값
+
+            if (isSliding) {
+                int slidingX = rabbitX + (rabbitWidth / 2) - (rabbitWidth / 4);
+                int slidingY = rabbitY + (rabbitHeight / 2) - (rabbitHeight / 4) + slidingOffsetY;
+                g.drawImage(currentRabbitImage, slidingX, slidingY, null);
+            } else {
+                g.drawImage(currentRabbitImage, rabbitX, rabbitY, null);
+            }
         }
     }
+
 
     private class MyKeyListener implements KeyListener {
         @Override
@@ -126,6 +139,8 @@ public class EarthPart extends JFrame {
             } else if (e.getKeyCode() == KeyEvent.VK_SPACE && !isJumping) {
                 isJumping = true;
                 new Thread(() -> jump()).start();
+            } else if (e.getKeyCode() == KeyEvent.VK_DOWN && !isJumping) {
+                isSliding = true;
             }
         }
 
@@ -135,6 +150,8 @@ public class EarthPart extends JFrame {
                 isMovingRight = false;
             } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
                 isMovingLeft = false;
+            } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                isSliding = false;
             }
         }
     }
@@ -214,11 +231,11 @@ public class EarthPart extends JFrame {
 
     private Image getCurrentRabbitImage() {
         if (isMovingLeft) {
-            return isJumping ? leftRabbitJump : leftRabbit[1];
+            return isJumping ? leftRabbitJump : (isSliding ? leftRabbitSliding : leftRabbit[1]);
         } else if (isMovingRight) {
-            return isJumping ? rightRabbitJump : rightRabbit[1];
+            return isJumping ? rightRabbitJump : (isSliding ? rightRabbitSliding : rightRabbit[1]);
         } else {
-            return isJumping ? rightRabbitJump : rightRabbit[1];
+            return isJumping ? rightRabbitJump : (isSliding ? rightRabbitSliding : rightRabbit[1]);
         }
     }
 
