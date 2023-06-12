@@ -11,6 +11,7 @@ public class EarthPart extends JFrame {
     private Image leftRabbitJump;
     private Image rightRabbitSliding;
     private Image leftRabbitSliding;
+    private Image heart;
 
     private boolean isJumping = false;
     private boolean isMovingLeft = false;
@@ -28,6 +29,8 @@ public class EarthPart extends JFrame {
     private int frameDelay = 5; // 토끼 이미지 변경 속도
 
     private int backgroundSpeed = 4; // 배경 이동 속도 : 숫자가 높을수록 빠름
+
+    private int playerHeart = 5;
 
     public EarthPart() {
         setUndecorated(true);
@@ -51,6 +54,8 @@ public class EarthPart extends JFrame {
         Image leftRabbitRun2 = new ImageIcon(getClass().getResource("img/left_rabbit_run2.png")).getImage();
         leftRabbitJump = new ImageIcon(getClass().getResource("img/left_rabbit_jump.png")).getImage();
         leftRabbitSliding = new ImageIcon(getClass().getResource("img/left_rabbit_sliding.png")).getImage();
+
+        heart = new ImageIcon(getClass().getResource("img/heart.png")).getImage();
 
         int rabbitWidth = rightRabbitRun1.getWidth(null);
         int rabbitHeight = rightRabbitRun1.getHeight(null);
@@ -123,6 +128,9 @@ public class EarthPart extends JFrame {
             }
             else {
                 g.drawImage(currentRabbitImage, rabbitX, rabbitY, null);
+            }
+            for (int i = 0; i < playerHeart; i++) { //하트 그리기
+                g.drawImage(heart, 40 + i * 85, 40, this);
             }
         }
     }
