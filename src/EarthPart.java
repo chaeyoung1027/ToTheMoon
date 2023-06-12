@@ -113,11 +113,15 @@ public class EarthPart extends JFrame {
 
             int slidingOffsetY = 80; // 슬라이딩 이미지의 Y 좌표 조절 값
 
-            if (isSliding) {
+            if(isSliding&&isJumping){
+                g.drawImage(currentRabbitImage, rabbitX, rabbitY,  null);
+            }
+            else if (isSliding) {
                 int slidingX = rabbitX + (rabbitWidth / 2) - (rabbitWidth / 4);
                 int slidingY = rabbitY + (rabbitHeight / 2) - (rabbitHeight / 4) + slidingOffsetY;
                 g.drawImage(currentRabbitImage, slidingX, slidingY, null);
-            } else {
+            }
+            else {
                 g.drawImage(currentRabbitImage, rabbitX, rabbitY, null);
             }
         }
