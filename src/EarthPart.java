@@ -12,6 +12,7 @@ public class EarthPart extends JFrame {
     private Image rightRabbitSliding;
     private Image leftRabbitSliding;
     private Image heart;
+    private Image emptyHeart;
 
     private boolean isJumping = false;
     private boolean isMovingLeft = false;
@@ -56,6 +57,7 @@ public class EarthPart extends JFrame {
         leftRabbitSliding = new ImageIcon(getClass().getResource("img/left_rabbit_sliding.png")).getImage();
 
         heart = new ImageIcon(getClass().getResource("img/heart.png")).getImage();
+        emptyHeart = new ImageIcon(getClass().getResource("img/empty_heart.png")).getImage();
 
         int rabbitWidth = rightRabbitRun1.getWidth(null);
         int rabbitHeight = rightRabbitRun1.getHeight(null);
@@ -129,6 +131,9 @@ public class EarthPart extends JFrame {
             else {
                 g.drawImage(currentRabbitImage, rabbitX, rabbitY, null);
             }
+            for (int i = 0; i < 5-playerHeart; i++) { //하트 그리기
+                g.drawImage(emptyHeart, 380-i*85, 40, this);
+            }
             for (int i = 0; i < playerHeart; i++) { //하트 그리기
                 g.drawImage(heart, 40 + i * 85, 40, this);
             }
@@ -150,6 +155,7 @@ public class EarthPart extends JFrame {
                 isMovingLeft = true;
             } else if (e.getKeyCode() == KeyEvent.VK_SPACE && !isJumping) {
                 isJumping = true;
+                playerHeart-=1; //확인을 위한 코드 지우기
                 new Thread(() -> jump()).start();
             } else if (e.getKeyCode() == KeyEvent.VK_DOWN && !isJumping) {
                 isSliding = true;
@@ -208,10 +214,10 @@ public class EarthPart extends JFrame {
             rabbitX -= backgroundSpeed;
         }
 
-        //토끼가 화면을 벗어나는지 확인하고 게임 오버 처리
+        //게임오버 조건 : 범위 벗어남, 목숨 0
         int rabbitLeftEdge = rabbitX - 10;
         int rabbitRightEdge = rabbitX + scaledWidth;
-        if (rabbitLeftEdge + 200 < 0 || rabbitRightEdge > getWidth()) {
+        if (rabbitLeftEdge + 200 < 0 || rabbitRightEdge > getWidth()||playerHeart==0) {
             System.out.println("게임 오버");
 
 //            new GameOver();
