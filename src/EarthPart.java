@@ -9,6 +9,8 @@ public class EarthPart extends JFrame {
     private Image[] leftRabbit = new Image[3];
     private Image rightRabbitJump;
     private Image leftRabbitJump;
+    private Image rightRabbitSliding;
+    private Image leftRabbitSliding;
 
     private boolean isJumping = false;
     private boolean isMovingLeft = false;
@@ -41,11 +43,14 @@ public class EarthPart extends JFrame {
         Image rabbitBetween = new ImageIcon(getClass().getResource("img/rabbit_between.png")).getImage();
         Image rightRabbitRun2 = new ImageIcon(getClass().getResource("img/rabbit_run2.png")).getImage();
         rightRabbitJump = new ImageIcon(getClass().getResource("img/rabbit_jump.png")).getImage();
+        rightRabbitSliding = new ImageIcon(getClass().getResource("img/rabbit_sliding.png")).getImage();
 
         Image leftRabbitRun1 = new ImageIcon(getClass().getResource("img/left_rabbit_run1.png")).getImage();
         Image leftRabbitBetween = new ImageIcon(getClass().getResource("img/left_rabbit_between.png")).getImage();
         Image leftRabbitRun2 = new ImageIcon(getClass().getResource("img/left_rabbit_run2.png")).getImage();
         leftRabbitJump = new ImageIcon(getClass().getResource("img/left_rabbit_jump.png")).getImage();
+        leftRabbitSliding = new ImageIcon(getClass().getResource("img/left_rabbit_sliding.png")).getImage();
+
 
         int rabbitWidth = rightRabbitRun1.getWidth(null);
         int rabbitHeight = rightRabbitRun1.getHeight(null);
@@ -59,6 +64,12 @@ public class EarthPart extends JFrame {
         int jumpScaledWidth = (int) (jumpWidth * 0.5);
         int jumpScaledHeight = (int) (jumpHeight * 0.5);
 
+        int slideWidth = leftRabbitSliding.getWidth(null);
+        int slideHeight = leftRabbitSliding.getHeight(null);
+
+        int slideScaledWidth = (int) (slideWidth * 0.5);
+        int slideScaledHeight = (int) (slideHeight * 0.5);
+
         rightRabbit[0] = rightRabbitRun1.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
         rightRabbit[1] = rabbitBetween.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
         rightRabbit[2] = rightRabbitRun2.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
@@ -69,6 +80,9 @@ public class EarthPart extends JFrame {
 
         rightRabbitJump = rightRabbitJump.getScaledInstance(jumpScaledWidth, jumpScaledHeight, Image.SCALE_SMOOTH);
         leftRabbitJump = leftRabbitJump.getScaledInstance(jumpScaledWidth, jumpScaledHeight, Image.SCALE_SMOOTH);
+
+        rightRabbitSliding = rightRabbitSliding.getScaledInstance(slideScaledWidth, slideScaledHeight, Image.SCALE_SMOOTH);
+        leftRabbitSliding = leftRabbitSliding.getScaledInstance(slideScaledWidth, slideScaledHeight, Image.SCALE_SMOOTH);
 
         addKeyListener(new MyKeyListener());
         setContentPane(new MyPanel());
@@ -170,6 +184,9 @@ public class EarthPart extends JFrame {
         int rabbitRightEdge = rabbitX + scaledWidth;
         if (rabbitLeftEdge + 200 < 0 || rabbitRightEdge > getWidth()) {
             System.out.println("게임 오버");
+
+//            new GameOver();
+//            setVisible(false);
         }
 
         frameCount++;
