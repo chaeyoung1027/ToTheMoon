@@ -44,6 +44,8 @@ public class EarthPart extends JFrame {
     private int i=0;//장애물 좌표를 위한 변수
     private Random random;
 
+    private int y;  //장애물의 y좌표
+
     private int playerHeart = 5;
     private ArrayList<int[]> numbers = new ArrayList<>();
 
@@ -138,7 +140,12 @@ public class EarthPart extends JFrame {
             if (backgroundX % 500 == 0) {
                 i++;
                 randnum = (int) (Math.random() * 5);
-                numbers.add(new int[]{randnum, 500+i*100, 500});
+                if(randnum==0||randnum==1){
+                    y = 630;
+                }else{
+                    y=760;
+                }
+                numbers.add(new int[]{randnum, 1500+i*100, y});
             }
 
             Image currentRabbitImage = getCurrentRabbitImage();
@@ -184,7 +191,6 @@ public class EarthPart extends JFrame {
                 isMovingLeft = true;
             } else if (e.getKeyCode() == KeyEvent.VK_SPACE && !isJumping) {
                 isJumping = true;
-                playerHeart-=1; //확인을 위한 코드 지우기
                 new Thread(() -> jump()).start();
             } else if (e.getKeyCode() == KeyEvent.VK_DOWN && !isJumping) {
                 isSliding = true;
@@ -258,7 +264,6 @@ public class EarthPart extends JFrame {
             frameCount = 0;
             toggleRabbitImage();
         }
-        int backgroundOffset = Math.abs(backgroundX / backgroundSpeed); //배경이 얼만큼씩 움직이는지
         for(int[] number : numbers){
             number[1]-=5;
         }
