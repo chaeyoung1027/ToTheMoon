@@ -24,7 +24,7 @@ public class EarthPart extends JFrame {
     private boolean isSliding = false;
     private int rabbitX = 500;
     private int rabbitY = 630;
-    private int rabbitMoveSpeed = 2;
+    private int rabbitMoveSpeed = 3;
 
     private int backgroundX = 0; // 배경의 위치
 
@@ -33,7 +33,7 @@ public class EarthPart extends JFrame {
     private int frameCount = 0;
     private int frameDelay = 5; // 토끼 이미지 변경 속도
 
-    private int backgroundSpeed = 5; // 배경 이동 속도 : 숫자가 높을수록 빠름
+    private int backgroundSpeed = 6; // 배경 이동 속도 : 숫자가 높을수록 빠름
 
     private int obstacleX = 2000; // 장애물의 초기 X 좌표
     private int obstacleY = 630; // 장애물의 Y 좌표
@@ -137,7 +137,7 @@ public class EarthPart extends JFrame {
                 g.drawImage(earthBackground, backgroundX + bgWidth, 0, null); // 다른 배경 이미지를 그립니다.
             }
 
-            if (backgroundX % 500 == 0) {
+            if (backgroundX % 400 == 0) {
                 i++;
                 randnum = (int) (Math.random() * 5);
                 if(randnum==0||randnum==1){
@@ -145,7 +145,7 @@ public class EarthPart extends JFrame {
                 }else{
                     y=760;
                 }
-                numbers.add(new int[]{randnum, 1500+i*100, y});
+                numbers.add(new int[]{randnum, 2000+i*50, y});
             }
 
             Image currentRabbitImage = getCurrentRabbitImage();
@@ -210,7 +210,7 @@ public class EarthPart extends JFrame {
     }
 
     public void jump() {
-        int jumpHeight = 150; // 점프 높이
+        int jumpHeight = 200; // 점프 높이
         int jumpSpeed = 5; // 점프 속도
         int initialY = rabbitY;
 
@@ -243,7 +243,7 @@ public class EarthPart extends JFrame {
             if (isMovingRight) {
                 rabbitX += rabbitMoveSpeed;
             } else if (isMovingLeft) {
-                rabbitX -= rabbitMoveSpeed; // 왼쪽으로 이동할 때 토끼의 위치를 왼쪽으로 변경합니다.
+                rabbitX -= rabbitMoveSpeed+6; // 왼쪽으로 이동할 때 토끼의 위치를 왼쪽으로 변경합니다.
             }
         } else {
             rabbitX -= backgroundSpeed;
@@ -265,7 +265,7 @@ public class EarthPart extends JFrame {
             toggleRabbitImage();
         }
         for(int[] number : numbers){
-            number[1]-=5;
+            number[1]-=backgroundSpeed;
         }
         repaint();
     }
