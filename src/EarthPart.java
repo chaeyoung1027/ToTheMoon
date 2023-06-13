@@ -14,6 +14,9 @@ public class EarthPart extends JFrame {
     private Image heart;
     private Image emptyHeart;
 
+    private Image[] TopObstacle = new Image[2];
+    private Image[] BottomObstacle = new Image[3];
+
     private boolean isJumping = false;
     private boolean isMovingLeft = false;
     private boolean isMovingRight = false;
@@ -55,6 +58,13 @@ public class EarthPart extends JFrame {
         Image leftRabbitRun2 = new ImageIcon(getClass().getResource("img/left_rabbit_run2.png")).getImage();
         leftRabbitJump = new ImageIcon(getClass().getResource("img/left_rabbit_jump.png")).getImage();
         leftRabbitSliding = new ImageIcon(getClass().getResource("img/left_rabbit_sliding.png")).getImage();
+
+        TopObstacle[0] = new ImageIcon(getClass().getResource("img/Cloud.png")).getImage();
+        TopObstacle[1] = new ImageIcon(getClass().getResource("img/Cloud2.png")).getImage();
+
+        BottomObstacle[0] = new ImageIcon(getClass().getResource("img/hurdle.png")).getImage();
+        BottomObstacle[1] = new ImageIcon(getClass().getResource("img/plant.png")).getImage();
+        BottomObstacle[2] = new ImageIcon(getClass().getResource("img/plant2.png")).getImage();
 
         heart = new ImageIcon(getClass().getResource("img/heart.png")).getImage();
         emptyHeart = new ImageIcon(getClass().getResource("img/empty_heart.png")).getImage();
@@ -139,7 +149,6 @@ public class EarthPart extends JFrame {
             }
         }
     }
-
 
     private class MyKeyListener implements KeyListener {
         @Override
