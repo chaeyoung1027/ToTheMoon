@@ -258,7 +258,10 @@ public class EarthPart extends JFrame {
             frameCount = 0;
             toggleRabbitImage();
         }
-
+        int backgroundOffset = Math.abs(backgroundX / backgroundSpeed); //배경이 얼만큼씩 움직이는지
+        for(int[] number : numbers){
+            number[1]-=5;
+        }
         repaint();
     }
 
