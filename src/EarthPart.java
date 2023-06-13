@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Random;
 
 public class EarthPart extends JFrame {
     private Image earthBackground;
@@ -33,6 +34,15 @@ public class EarthPart extends JFrame {
     private int frameDelay = 5; // 토끼 이미지 변경 속도
 
     private int backgroundSpeed = 5; // 배경 이동 속도 : 숫자가 높을수록 빠름
+
+    private int obstacleX = 2000; // 장애물의 초기 X 좌표
+    private int obstacleY = 630; // 장애물의 Y 좌표
+    private int obstacleWidth;
+    private int obstacleHeight;
+    private int obstacleSpeed = 5; // 장애물 이동 속도
+    private int randnum; //랜덤숫자
+    private int i=0;//장애물 좌표를 위한 변수
+    private Random random;
 
     private int playerHeart = 5;
 
@@ -122,6 +132,16 @@ public class EarthPart extends JFrame {
             g.drawImage(earthBackground, backgroundX, 0, null);
             if (backgroundX < panelWidth - bgWidth) {
                 g.drawImage(earthBackground, backgroundX + bgWidth, 0, null); // 다른 배경 이미지를 그립니다.
+            }
+
+            if (backgroundX % 500 == 0) {
+                i++;
+                randnum = (int) (Math.random() * 2);
+                if (randnum == 0) {
+                    g.drawImage(TopObstacle[(int) (Math.random() * 2)], backgroundX + 100 * i, 500, this);
+                } else {
+                    g.drawImage(BottomObstacle[(int) (Math.random() * 3)], backgroundX + 500 * i, 300, this);
+                }
             }
 
             Image currentRabbitImage = getCurrentRabbitImage();
