@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class EarthPart extends JFrame {
@@ -15,8 +16,7 @@ public class EarthPart extends JFrame {
     private Image heart;
     private Image emptyHeart;
 
-    private Image[] TopObstacle = new Image[2];
-    private Image[] BottomObstacle = new Image[3];
+    private Image[] Obstacle = new Image[5];
 
     private boolean isJumping = false;
     private boolean isMovingLeft = false;
@@ -45,6 +45,7 @@ public class EarthPart extends JFrame {
     private Random random;
 
     private int playerHeart = 5;
+    private ArrayList<int[]> numbers = new ArrayList<>();
 
     public EarthPart() {
         setUndecorated(true);
@@ -69,12 +70,11 @@ public class EarthPart extends JFrame {
         leftRabbitJump = new ImageIcon(getClass().getResource("img/left_rabbit_jump.png")).getImage();
         leftRabbitSliding = new ImageIcon(getClass().getResource("img/left_rabbit_sliding.png")).getImage();
 
-        TopObstacle[0] = new ImageIcon(getClass().getResource("img/Cloud.png")).getImage();
-        TopObstacle[1] = new ImageIcon(getClass().getResource("img/Cloud2.png")).getImage();
-
-        BottomObstacle[0] = new ImageIcon(getClass().getResource("img/hurdle.png")).getImage();
-        BottomObstacle[1] = new ImageIcon(getClass().getResource("img/plant.png")).getImage();
-        BottomObstacle[2] = new ImageIcon(getClass().getResource("img/plant2.png")).getImage();
+        Obstacle[0] = new ImageIcon(getClass().getResource("img/Cloud.png")).getImage();
+        Obstacle[1] = new ImageIcon(getClass().getResource("img/Cloud2.png")).getImage();
+        Obstacle[2] = new ImageIcon(getClass().getResource("img/hurdle.png")).getImage();
+        Obstacle[3] = new ImageIcon(getClass().getResource("img/plant.png")).getImage();
+        Obstacle[4] = new ImageIcon(getClass().getResource("img/plant2.png")).getImage();
 
         heart = new ImageIcon(getClass().getResource("img/heart.png")).getImage();
         emptyHeart = new ImageIcon(getClass().getResource("img/empty_heart.png")).getImage();
@@ -96,6 +96,7 @@ public class EarthPart extends JFrame {
 
         int slideScaledWidth = (int) (slideWidth * 0.5);
         int slideScaledHeight = (int) (slideHeight * 0.5);
+
 
         rightRabbit[0] = rightRabbitRun1.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
         rightRabbit[1] = rabbitBetween.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
@@ -136,12 +137,8 @@ public class EarthPart extends JFrame {
 
             if (backgroundX % 500 == 0) {
                 i++;
-                randnum = (int) (Math.random() * 2);
-                if (randnum == 0) {
-                    g.drawImage(TopObstacle[(int) (Math.random() * 2)], backgroundX + 100 * i, 500, this);
-                } else {
-                    g.drawImage(BottomObstacle[(int) (Math.random() * 3)], backgroundX + 500 * i, 300, this);
-                }
+                randnum = (int) (Math.random() * 5);
+                numbers.add(new int[]{randnum, 500+i*100, 500});
             }
 
             Image currentRabbitImage = getCurrentRabbitImage();
@@ -166,6 +163,9 @@ public class EarthPart extends JFrame {
             }
             for (int i = 0; i < playerHeart; i++) { //하트 그리기
                 g.drawImage(heart, 40 + i * 85, 40, this);
+            }
+            for(int[] number : numbers){
+                g.drawImage(Obstacle[number[0]], number[1], number[2], this);
             }
         }
     }
