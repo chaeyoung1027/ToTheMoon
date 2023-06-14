@@ -33,7 +33,7 @@ public class EarthPart extends JFrame {
     private int frameCount = 0;
     private int frameDelay = 5; // 토끼 이미지 변경 속도
 
-    private int backgroundSpeed = 6; // 배경 이동 속도 : 숫자가 높을수록 빠름
+    private int backgroundSpeed = 7; // 배경 이동 속도 : 숫자가 높을수록 빠름
 
     private int obstacleX = 2000; // 장애물의 초기 X 좌표
     private int obstacleY = 630; // 장애물의 Y 좌표
@@ -137,15 +137,19 @@ public class EarthPart extends JFrame {
                 g.drawImage(earthBackground, backgroundX + bgWidth, 0, null); // 다른 배경 이미지를 그립니다.
             }
 
-            if (backgroundX % 400 == 0) {
+            if (backgroundX % 100 == 0 && Math.random()>0.5) {  //장애물 나오는 주기 설정
                 i++;
                 randnum = (int) (Math.random() * 5);
-                if(randnum==0||randnum==1){
-                    y = 630;
-                }else{
-                    y=760;
+                if(randnum==0||randnum==1){ //구름
+                    y = 550;
                 }
-                numbers.add(new int[]{randnum, 2000+i*50, y});
+                else if(randnum==2){    //허들
+                    y= 700;
+                }
+                else{   //선인장
+                    y = 670;
+                }
+                numbers.add(new int[]{randnum, 2000, y});
             }
 
             Image currentRabbitImage = getCurrentRabbitImage();
@@ -210,7 +214,7 @@ public class EarthPart extends JFrame {
     }
 
     public void jump() {
-        int jumpHeight = 200; // 점프 높이
+        int jumpHeight = 250; // 점프 높이
         int jumpSpeed = 5; // 점프 속도
         int initialY = rabbitY;
 
