@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class EarthPart extends JFrame {
     private Image earthBackground;
@@ -14,13 +16,15 @@ public class EarthPart extends JFrame {
     private Image heart;
     private Image emptyHeart;
 
+    private Image[] Obstacle = new Image[5];
+
     private boolean isJumping = false;
     private boolean isMovingLeft = false;
     private boolean isMovingRight = false;
     private boolean isSliding = false;
     private int rabbitX = 500;
     private int rabbitY = 630;
-    private int rabbitMoveSpeed = 2;
+    private int rabbitMoveSpeed = 3;
 
     private int backgroundX = 0; // 배경의 위치
 
@@ -29,9 +33,21 @@ public class EarthPart extends JFrame {
     private int frameCount = 0;
     private int frameDelay = 5; // 토끼 이미지 변경 속도
 
-    private int backgroundSpeed = 5; // 배경 이동 속도 : 숫자가 높을수록 빠름
+    private int backgroundSpeed = 6; // 배경 이동 속도 : 숫자가 높을수록 빠름
+
+    private int obstacleX = 2000; // 장애물의 초기 X 좌표
+    private int obstacleY = 630; // 장애물의 Y 좌표
+    private int obstacleWidth;
+    private int obstacleHeight;
+    private int obstacleSpeed = 5; // 장애물 이동 속도
+    private int randnum; //랜덤숫자
+    private int i=0;//장애물 좌표를 위한 변수
+    private Random random;
+
+    private int y;  //장애물의 y좌표
 
     private int playerHeart = 5;
+    private ArrayList<int[]> numbers = new ArrayList<>();
 
     public EarthPart() {
         setUndecorated(true);
@@ -56,6 +72,12 @@ public class EarthPart extends JFrame {
         leftRabbitJump = new ImageIcon(getClass().getResource("img/left_rabbit_jump.png")).getImage();
         leftRabbitSliding = new ImageIcon(getClass().getResource("img/left_rabbit_sliding.png")).getImage();
 
+        Obstacle[0] = new ImageIcon(getClass().getResource("img/Cloud.png")).getImage();
+        Obstacle[1] = new ImageIcon(getClass().getResource("img/Cloud2.png")).getImage();
+        Obstacle[2] = new ImageIcon(getClass().getResource("img/hurdle.png")).getImage();
+        Obstacle[3] = new ImageIcon(getClass().getResource("img/plant.png")).getImage();
+        Obstacle[4] = new ImageIcon(getClass().getResource("img/plant2.png")).getImage();
+
         heart = new ImageIcon(getClass().getResource("img/heart.png")).getImage();
         emptyHeart = new ImageIcon(getClass().getResource("img/empty_heart.png")).getImage();
 
@@ -76,6 +98,7 @@ public class EarthPart extends JFrame {
 
         int slideScaledWidth = (int) (slideWidth * 0.5);
         int slideScaledHeight = (int) (slideHeight * 0.5);
+
 
         rightRabbit[0] = rightRabbitRun1.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
         rightRabbit[1] = rabbitBetween.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
@@ -114,6 +137,17 @@ public class EarthPart extends JFrame {
                 g.drawImage(earthBackground, backgroundX + bgWidth, 0, null); // 다른 배경 이미지를 그립니다.
             }
 
+            if (backgroundX % 400 == 0) {
+                i++;
+                randnum = (int) (Math.random() * 5);
+                if(randnum==0||randnum==1){
+                    y = 630;
+                }else{
+                    y=760;
+                }
+                numbers.add(new int[]{randnum, 2000+i*50, y});
+            }
+
             Image currentRabbitImage = getCurrentRabbitImage();
             int rabbitWidth = currentRabbitImage.getWidth(null);
             int rabbitHeight = currentRabbitImage.getHeight(null);
@@ -137,9 +171,11 @@ public class EarthPart extends JFrame {
             for (int i = 0; i < playerHeart; i++) { //하트 그리기
                 g.drawImage(heart, 40 + i * 85, 40, this);
             }
+            for(int[] number : numbers){
+                g.drawImage(Obstacle[number[0]], number[1], number[2], this);
+            }
         }
     }
-
 
     private class MyKeyListener implements KeyListener {
         @Override
@@ -155,7 +191,6 @@ public class EarthPart extends JFrame {
                 isMovingLeft = true;
             } else if (e.getKeyCode() == KeyEvent.VK_SPACE && !isJumping) {
                 isJumping = true;
-                playerHeart-=1; //확인을 위한 코드 지우기
                 new Thread(() -> jump()).start();
             } else if (e.getKeyCode() == KeyEvent.VK_DOWN && !isJumping) {
                 isSliding = true;
@@ -175,7 +210,7 @@ public class EarthPart extends JFrame {
     }
 
     public void jump() {
-        int jumpHeight = 150; // 점프 높이
+        int jumpHeight = 200; // 점프 높이
         int jumpSpeed = 5; // 점프 속도
         int initialY = rabbitY;
 
@@ -208,7 +243,7 @@ public class EarthPart extends JFrame {
             if (isMovingRight) {
                 rabbitX += rabbitMoveSpeed;
             } else if (isMovingLeft) {
-                rabbitX -= rabbitMoveSpeed; // 왼쪽으로 이동할 때 토끼의 위치를 왼쪽으로 변경합니다.
+                rabbitX -= rabbitMoveSpeed+6; // 왼쪽으로 이동할 때 토끼의 위치를 왼쪽으로 변경합니다.
             }
         } else {
             rabbitX -= backgroundSpeed;
@@ -229,7 +264,9 @@ public class EarthPart extends JFrame {
             frameCount = 0;
             toggleRabbitImage();
         }
-
+        for(int[] number : numbers){
+            number[1]-=backgroundSpeed;
+        }
         repaint();
     }
 
