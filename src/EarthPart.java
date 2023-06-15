@@ -147,7 +147,7 @@ public class EarthPart extends JFrame {
                 g.drawImage(earthBackground, backgroundX + bgWidth, 0, null); // 다른 배경 이미지를 그립니다.
             }
 
-            //400마다 장애물 그리기, 장애물별로 y좌표 부여
+            //400마다 장애물 저장, 장애물별로 y좌표 부여
             if (backgroundX % 400 == 0) {
                 i++;
                 randnum = (int) (Math.random() * 5);
