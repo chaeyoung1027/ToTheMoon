@@ -4,10 +4,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class SpacePart extends JFrame implements KeyListener {
     private Image screenImage;
     private Graphics screenGraphic;
+    private Timer gameTimer;
+    private Random random = new Random();
 
     // 이동 여부
     private boolean moveUp = false;
@@ -34,42 +38,18 @@ public class SpacePart extends JFrame implements KeyListener {
     private int spaceshipY = 750; // 초기 Y 좌표
 
     private JLabel imageLabel;
-    private ImageIcon[] images;
     private int currentIndex = 0;
 
-    // 장애물(인공위성)
-    private Image junk1 = new ImageIcon(ToTheMoon.class.getResource("img/SpaceJunk1.png")).getImage();
-    private Image junk2 = new ImageIcon(ToTheMoon.class.getResource("img/SpaceJunk2.png")).getImage();
+    //체력바
+    private int hp = 250;
+    private Image life = new ImageIcon(ToTheMoon.class.getResource("img/life.png")).getImage();
 
-    private int junkWidth;
-    private int junkHeight;
+    //장애물(인공위성)
+    private ArrayList<Obstacle> obstacleList = new ArrayList<Obstacle>();
+    private Obstacle obstacle;
 
-    private int junkX;
-    private int junkY;
-
-    // 현재 장애물(인공위성) 이미지
-    private Image currentJunkImage;
-
-    private Timer junkTimer;
-    private int junkDelay;
-    private int junkState = 1;
-
-    // 장애물(운석)
-    private Image meteor1 = new ImageIcon(ToTheMoon.class.getResource("img/Meteor1.png")).getImage();
-    private Image meteor2 = new ImageIcon(ToTheMoon.class.getResource("img/Meteor2.png")).getImage();
-
-    private int meteorWidth;
-    private int meteorHeight;
-
-    private int meteorX;
-    private int meteorY;
-
-    private Image currentMeteorImage;
-
-    private Timer meteorTimer;
-    private int meteorDelay;
-    private int meteorState = 1;
-
+    //아이템
+    private ArrayList<Item> itemList = new ArrayList<Item>();
 
     public SpacePart() {
         setUndecorated(true);
@@ -79,6 +59,14 @@ public class SpacePart extends JFrame implements KeyListener {
         setLayout(null);
         setFocusable(true);
         setVisible(true);
+
+        gameTimer = new Timer(10, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                update();
+                repaint();
+            }
+        });
 
         // KeyListener 등록
         addKeyListener(this);
@@ -109,78 +97,154 @@ public class SpacePart extends JFrame implements KeyListener {
             }
         });
         imageTimer.start();
-
-        // --- 장애물 생성 ---
-        // 인공위성 설정
-        currentJunkImage = junk1;
-        junkX = (int) (Math.random() * (1920 - 490));   // 화면 내에서 랜덤 X 좌표를 가짐
-        junkY = -352;   // 화면 밖에서 생성
-        junkDelay = (int) (Math.random() * 5000) + 5000;    // 3초~5초 딜레이 주기
-
-        // 이미지 크기 랜덤 설정
-        junkWidth = (int) (Math.random() * 301) + 190;  // 300부터 490 사이의 랜덤 값
-        double aspectRatio1 = (double) junk1.getHeight(null) / junk1.getWidth(null);
-        junkHeight = (int) (junkWidth * aspectRatio1);
-        junk1 = junk1.getScaledInstance(junkWidth, junkHeight, Image.SCALE_SMOOTH);
-
-        junkWidth = (int) (Math.random() * 301) + 190;  // 300부터 490 사이의 랜덤 값
-        double aspectRatio2 = (double) junk2.getHeight(null) / junk2.getWidth(null);
-        junkHeight = (int) (junkWidth * aspectRatio2);
-        junk2 = junk2.getScaledInstance(junkWidth, junkHeight, Image.SCALE_SMOOTH);
-
-
-        junkTimer = new Timer(100, new JunkActionListener());  // 0.1초마다 JunkActionListener 호출
-        junkTimer.start();  // 타이머 시작
-
-
-        // 운석 설정
-        currentMeteorImage = meteor1;
-        meteorX = (int) (Math.random() * (1920 - 400));   // 화면 내에서 랜덤 X 좌표를 가짐
-        meteorY = -401;   // 화면 밖에서 생성
-        meteorDelay = (int) (Math.random() * 3000) + 2000;    // 3초~5초 딜레이 주기
-
-        // 이미지 크기 랜덤 설정
-        meteorWidth = (int) (Math.random() * 101) + 100;  // 100부터 400 사이의 랜덤 값
-        double aspectRatio3 = (double) meteor1.getHeight(null) / meteor1.getWidth(null);
-        meteorHeight = (int) (meteorWidth * aspectRatio3);
-        meteor1 = meteor1.getScaledInstance(meteorWidth, meteorHeight, Image.SCALE_SMOOTH);
-
-        meteorWidth = (int) (Math.random() * 101) + 100;  // 100부터 400 사이의 랜덤 값
-        double aspectRatio4 = (double) meteor2.getHeight(null) / meteor2.getWidth(null);
-        meteorHeight = (int) (meteorWidth * aspectRatio4);
-        meteor2 = meteor2.getScaledInstance(meteorWidth, meteorHeight, Image.SCALE_SMOOTH);
-
-        meteorTimer = new Timer(100, new JunkActionListener());  // 0.1초마다 JunkActionListener 호출
-        meteorTimer.start();  // 타이머 시작
-
     }
 
-    private class JunkActionListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            junkY += 50;
-            if (junkY > 1080) {
-                junkY = -352;
-                junkX = (int) (Math.random() * (1920 - 490));
-                junkDelay = (int) (Math.random() * 5000) + 5000;
-                junkState = junkState == 1 ? 2 : 1;
-                currentJunkImage = junkState == 1 ? junk1 : junk2;
-            }
+    public void startGame() {
+        gameTimer.start();
+        generateObstacles();
+        generateItems();
+        startItemHPRechargeTimer();
+    }
 
-            meteorY += 60;
-            if (meteorY > 1080) {
-                meteorY = -401;
-                meteorX = (int) (Math.random() * (1920 - 400));
-                meteorDelay = (int) (Math.random() * 3000) + 2000;
-                meteorState = meteorState == 1 ? 2 : 1;
-                currentMeteorImage = meteorState == 1 ? meteor1 : meteor2;
+    private void update() {
+        moveObstacles();
+        moveItems();
+        checkCollision();
+    }
+
+    private void moveObstacles() {
+        for(int i=obstacleList.size()-1; i>=0; i--) {
+            Obstacle obstacle = obstacleList.get(i);
+            obstacle.y += 10;
+            if(obstacle.y > 1080) {
+                obstacleList.remove(i);
             }
-            repaint();
+        }
+    }
+
+    private void moveItems() {
+        for(int i=itemList.size()-1; i>=0; i--) {
+            Item item = itemList.get(i);
+            item.y += 8;
+            if(item.y > 1080) {
+                itemList.remove(i);
+            }
+        }
+    }
+
+    private void checkCollision() {
+        Rectangle shipRect = new Rectangle(spaceshipX, spaceshipY, 150, 254);
+        //장애물 충돌 검사
+        for(int i=obstacleList.size()-1; i>=0; i--) {
+            Obstacle obstacle = obstacleList.get(i);
+            Rectangle obstacleRect = new Rectangle(obstacle.x, obstacle.y, 200, 200);
+            if(shipRect.intersects(obstacleRect)) {
+                hp--;
+                obstacleList.remove(i);
+                if(hp <= 0) {
+                    gameOver();
+                }
+            }
+        }
+
+        //아이템 충돌 검사
+        for (int i = itemList.size() - 1; i >= 0; i--) {
+            Item item = itemList.get(i);
+            Rectangle itemRect = new Rectangle(item.x, item.y, 100, 100);
+            if (shipRect.intersects(itemRect)) {
+                hp += 10;
+                itemList.remove(i);
+            }
+        }
+    }
+
+    private void gameOver() {
+        gameTimer.stop();
+        //TODO: 게임 오버 화면으로 연결
+    }
+
+    private void generateObstacles() {
+        int obstacleTypeCount = 4;
+        int obstacleSpawnInterval = 1000; // 1 second
+        Timer obstacleTimer = new Timer(obstacleSpawnInterval, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int obstacleType = random.nextInt(obstacleTypeCount);
+                int obstacleX = random.nextInt(1920 - 200);
+                obstacleList.add(new Obstacle(obstacleX, -200, obstacleType));
+            }
+        });
+        obstacleTimer.start();
+    }
+
+    private void generateItems() {
+        int itemSpawnInterval = 1000; // 5 seconds
+        Timer itemTimer = new Timer(itemSpawnInterval, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (random.nextDouble() < 0.2) { // 20% chance
+                    int itemType = random.nextInt(2);
+                    int itemX = random.nextInt(1920 - 100);
+                    itemList.add(new Item(itemX, -100, itemType));
+                }
+            }
+        });
+        itemTimer.start();
+    }
+
+    private void startItemHPRechargeTimer() {
+        Timer itemHPRechargeTimer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                hp = Math.min(hp + 1, 250);
+            }
+        });
+        itemHPRechargeTimer.start();
+    }
+
+    private class Obstacle {
+        private Image obstacleImage;
+        int x, y, type;
+
+        public Obstacle(int x, int y, int type) {
+            this.x = x;
+            this.y = y;
+            this.type = type;
+
+            // 장애물 타입에 따라 이미지 로드
+            if (type == 1) {
+                obstacleImage = new ImageIcon(ToTheMoon.class.getResource("img/SpaceJunk1.png")).getImage();
+            } else if (type == 2) {
+                obstacleImage = new ImageIcon(ToTheMoon.class.getResource("img/SpaceJunk2.png")).getImage();
+            } else if (type == 3) {
+                obstacleImage = new ImageIcon(ToTheMoon.class.getResource("img/Meteor1.png")).getImage();
+            } else if (type == 4) {
+                obstacleImage = new ImageIcon(ToTheMoon.class.getResource("img/Meteor2.png")).getImage();
+            }
+        }
+    }
+
+    public class Item {
+        private Image itemImage;
+        int x, y, type;
+
+        public Item(int x, int y, int type) {
+            this.x = x;
+            this.y = y;
+            this.type = type;
+
+            // 장애물 타입에 따라 이미지 로드
+            if (type == 1) {
+                itemImage = new ImageIcon(ToTheMoon.class.getResource("img/Fuel.png")).getImage();
+            } else if (type == 2) {
+                itemImage = new ImageIcon(ToTheMoon.class.getResource("img/FuelTank.png")).getImage();
+            }
         }
     }
 
     // 그리는 함수
     public void paint(Graphics g) {
+        super.paint(g);
         GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(null);
         screenImage = createImage(1920, 1080);
         screenGraphic = screenImage.getGraphics();
@@ -195,6 +259,24 @@ public class SpacePart extends JFrame implements KeyListener {
         }
         if (yPos2 >= background.getHeight(null)) {
             yPos2 = -background.getHeight(null); // 두 번째 배경 이미지가 화면 아래로 벗어나면 다시 위로 이동
+        }
+
+        //우주선 그리기
+        g.drawImage(spaceshipImages[spaceshipImageIndex], spaceshipX, spaceshipY, null);
+
+        //체력바 그리기
+        g.setColor(Color.GREEN);
+        g.fillRect(1605, 980, 250, 20);
+        g.drawImage(life, 1548, 957, null);
+
+        //장애물 그리기
+        for(Obstacle obstacle : obstacleList) {
+            g.drawImage(obstacle.obstacleImage, obstacle.x, obstacle.y, null);
+        }
+
+        //아이템 그리기
+        for(Item item : itemList) {
+            g.drawImage(item.itemImage, item.x, item.y, null);
         }
 
     }
@@ -213,13 +295,9 @@ public class SpacePart extends JFrame implements KeyListener {
             spaceshipX += 6;
         }
 
-
         g.drawImage(background, 0, yPos1, null); // 첫 번째 배경 이미지 그리기 위치에 yPos1 변수를 사용하여 스크롤 효과 적용
         g.drawImage(background, 0, yPos2, null); // 두 번째 배경 이미지 그리기 위치에 yPos2 변수를 사용하여 스크롤 효과 적용
 
-        g.drawImage(spaceshipImages[spaceshipImageIndex], spaceshipX, spaceshipY, null);
-        g.drawImage(currentJunkImage, junkX, junkY, junkWidth, junkHeight, null);
-        g.drawImage(currentMeteorImage, meteorX, meteorY, null);
         this.repaint();	// paint 함수로 돌아감
     }
 
@@ -257,5 +335,8 @@ public class SpacePart extends JFrame implements KeyListener {
         }
     }
 
-    public static void main(String[] args) { new SpacePart(); }
+    public static void main(String[] args) {
+        SpacePart game = new SpacePart();
+        game.startGame();
+    }
 }
