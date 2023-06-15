@@ -1,3 +1,5 @@
+import org.w3c.dom.css.Rect;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -317,6 +319,9 @@ public class EarthPart extends JFrame {
         } else {
             return isJumping ? rightRabbitJump : (isSliding ? rightRabbitSliding : rightRabbit[1]);
         }
+    }
+    //장애물 충돌
+    private void checkCollision(){
     }
 
     public static void main(String[] args) {
