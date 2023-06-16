@@ -64,8 +64,6 @@ public class GameOver extends JFrame {
             }
         });
         add(GoMainButton);
-
-
     }
     // 그리는 함수
     public void paint(Graphics g) {
