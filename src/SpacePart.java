@@ -1,13 +1,9 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -30,10 +26,11 @@ public class SpacePart extends JFrame implements KeyListener {
 
     Timer imageTimer;   // 배경 이미지 변경 타이머
 
+    Toolkit tk = Toolkit.getDefaultToolkit();
     // 우주선
     private Image[] spaceshipImages = {
-            new ImageIcon(ToTheMoon.class.getResource("img/Spaceship_fire.png")).getImage(),
-            new ImageIcon(ToTheMoon.class.getResource("img/Spaceship_fire2.png")).getImage()
+            new ImageIcon(ToTheMoon.class.getResource("spaceship_fire.png")).getImage(),
+            new ImageIcon(ToTheMoon.class.getResource("spaceship_fire2.png")).getImage()
     };
     private int spaceshipImageIndex = 0;
 
@@ -125,7 +122,8 @@ public class SpacePart extends JFrame implements KeyListener {
     private void moveObstacles() {
         for(int i=obstacleList.size()-1; i>=0; i--) {
             Obstacle obstacle = obstacleList.get(i);
-            obstacle.y += 15;   // 장애물 이동 속도
+
+            obstacle.y += obstacle.getSpeed();   // 장애물 이동 속도
             if(obstacle.y > 1080) {
                 obstacleList.remove(i);
             }
@@ -143,11 +141,11 @@ public class SpacePart extends JFrame implements KeyListener {
     }
 
     private void checkCollision() {
-        Rectangle shipRect = new Rectangle(spaceshipX, spaceshipY, 80, 168);
+        Rectangle shipRect = new Rectangle(spaceshipX, spaceshipY, 96, 205);
         //장애물 충돌 검사
         for(int i=obstacleList.size()-1; i>=0; i--) {
             Obstacle obstacle = obstacleList.get(i);
-            Rectangle obstacleRect = new Rectangle(obstacle.x, obstacle.y, obstacle.getWidth(), obstacle.getHeight());
+            Rectangle obstacleRect = new Rectangle(obstacle.x, obstacle.y, obstacle.getWidth()-20, obstacle.getHeight()-30);
             if(shipRect.intersects(obstacleRect)) {
                 hp -= obstacle.getHPDecrease();
                 obstacleList.remove(i);
@@ -162,7 +160,12 @@ public class SpacePart extends JFrame implements KeyListener {
             Item item = itemList.get(i);
             Rectangle itemRect = new Rectangle(item.x, item.y, item.getWidth(), item.getHeight());
             if (shipRect.intersects(itemRect)) {
-                hp += item.getHPIncrease();
+                if(hp > 250) {
+                    hp += 0;
+                }
+                else {
+                    hp += item.getHPIncrease();
+                }
                 itemList.remove(i);
             }
         }
@@ -174,7 +177,8 @@ public class SpacePart extends JFrame implements KeyListener {
         imageTimer.stop();
         obstacleTimer.stop();
         itemTimer.stop();
-        //TODO: 게임 오버 화면으로 연결
+        new GameOver();
+        setVisible(false);
     }
 
     private void generateObstacles() {
@@ -205,16 +209,6 @@ public class SpacePart extends JFrame implements KeyListener {
         });
         itemTimer.start();
     }
-
-//    private void startItemHPRechargeTimer() {
-//        Timer itemHPRechargeTimer = new Timer(1000, new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                hp = Math.min(hp + 1, 250);
-//            }
-//        });
-//        itemHPRechargeTimer.start();
-//    }
 
     private class Obstacle {
         private Image obstacleImage;
@@ -263,6 +257,14 @@ public class SpacePart extends JFrame implements KeyListener {
             }
 
             return hpDecrease;
+        }
+
+        public int getSpeed() {
+            if(type == 2) {
+                return 20;
+            } else {
+                return 15;
+            }
         }
     }
 
