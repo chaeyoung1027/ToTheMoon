@@ -11,7 +11,7 @@ public class ToTheMoonDB {
         try {
             Connection connection = DriverManager.getConnection(url, userName, password);
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM ranking");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM ranking order by score desc");
 
             int rank = 1;
             while(resultSet.next()){
