@@ -26,7 +26,6 @@ public class SpacePart extends JFrame implements KeyListener {
 
     Timer imageTimer;   // 배경 이미지 변경 타이머
 
-    Toolkit tk = Toolkit.getDefaultToolkit();
     // 우주선
     private Image[] spaceshipImages = {
             new ImageIcon(ToTheMoon.class.getResource("spaceship_fire.png")).getImage(),
@@ -46,12 +45,16 @@ public class SpacePart extends JFrame implements KeyListener {
     // 체력바
     private int hp = 250;
     private Image life = new ImageIcon(ToTheMoon.class.getResource("img/life.png")).getImage();
+    Timer hpDecreaseTimer; // HP 감소 타이머
 
     // 장애물 리스트
     private ArrayList<Obstacle> obstacleList = new ArrayList<Obstacle>();
     private Obstacle obstacle;
 
     Timer obstacleTimer;
+    Timer shakeTimer;   // 충돌 모션 타이머
+
+    private int shakeCount = 0;
 
     // 아이템 리스트
     private ArrayList<Item> itemList = new ArrayList<Item>();
@@ -105,6 +108,35 @@ public class SpacePart extends JFrame implements KeyListener {
             }
         });
         imageTimer.start();
+
+        // HP 감소 타이머 설정
+        hpDecreaseTimer = new Timer(1000, new ActionListener() {    // 1초 단위
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                decreaseHP();
+            }
+        });
+        hpDecreaseTimer.start();
+
+        // 충돌 시 우주선 모션
+        shakeTimer = new Timer(30, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (shakeCount % 2 == 0) {
+                    spaceshipX -= 10; // 좌로 흔들림
+                } else {
+                    spaceshipX += 10; // 우로 흔들림
+                }
+
+                shakeCount++;
+
+                if (shakeCount >= 200 / 30) {
+                    stopShakeAnimation();
+                }
+
+                repaint();
+            }
+        });
     }
 
     public void startGame() {
@@ -117,6 +149,14 @@ public class SpacePart extends JFrame implements KeyListener {
         moveObstacles();
         moveItems();
         checkCollision();
+    }
+
+    private void decreaseHP() {
+        hp -= 5; // 1초에 5씩 감소
+
+        if (hp <= 0) {
+            gameOver();
+        }
     }
 
     private void moveObstacles() {
@@ -140,6 +180,24 @@ public class SpacePart extends JFrame implements KeyListener {
         }
     }
 
+    private void startShakeAnimation() {
+        if (!shakeTimer.isRunning()) {
+            shakeTimer.start(); // 모션 타이머 시작
+        } else {
+            shakeCount = 0; // 모션 타이머가 이미 실행 중인 경우 초기화
+        }
+    }
+
+    private void stopShakeAnimation() {
+        int originalSpaceshipX = spaceshipX;
+        if (shakeTimer.isRunning()) {
+            shakeTimer.stop(); // 모션 타이머 중지
+            spaceshipX = originalSpaceshipX; // 우주선 위치 초기화
+            shakeCount = 0;
+            repaint(); // 다시 그리기
+        }
+    }
+
     private void checkCollision() {
         Rectangle shipRect = new Rectangle(spaceshipX, spaceshipY, 96, 205);
         //장애물 충돌 검사
@@ -152,6 +210,7 @@ public class SpacePart extends JFrame implements KeyListener {
                 if(hp <= 0) {
                     gameOver();
                 }
+                shakeTimer.start();
             }
         }
 
@@ -171,12 +230,15 @@ public class SpacePart extends JFrame implements KeyListener {
         }
     }
 
+
+
     private void gameOver() {
         gameTimer.stop();
         imageTimer.stop();
         imageTimer.stop();
         obstacleTimer.stop();
         itemTimer.stop();
+        hpDecreaseTimer.stop();
         new GameOver();
         setVisible(false);
     }
