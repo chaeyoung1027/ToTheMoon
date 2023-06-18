@@ -17,7 +17,7 @@ public class ToTheMoonDB {
             while(resultSet.next()){
                 String score = resultSet.getString("score");
                 String playerID = resultSet.getString("playerID");
-                rankingText += rank + "          " + playerID + "     " + score + "\n";
+                rankingText += rank + "\t" + playerID + "\t" + score + "\n";
                 rank++;
             }
             resultSet.close();

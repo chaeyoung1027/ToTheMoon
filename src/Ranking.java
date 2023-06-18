@@ -27,6 +27,8 @@ public class Ranking extends JFrame {
 
     public void screenDraw(Graphics g) {
         g.drawImage(background , 0, 0, null);
+        int[] x = new int[]{675, 830, 1150};
+        int i = 0;
 
         // 랭킹 정보를 그림
         g.setColor(Color.WHITE);
@@ -34,8 +36,19 @@ public class Ranking extends JFrame {
         String[] rankingLines = rankingText.split("\n");
         int y = 320; // 시작 y 좌표
         for (String line : rankingLines) {
-            g.drawString(line, 675, y); // 위치 및 스타일을 조정하여 적절히 표시
-            y += 80; // y 좌표 간격을 200씩 증가
+            String[] a = line.split("\t");
+            if (a.length >= 3) {
+                for (String print : a) {
+                    if (i < x.length) { // Check if the index is within bounds of the x array
+                        g.drawString(print, x[i], y); // 위치 및 스타일을 조정하여 적절히 표시
+                        i++; // x 좌표 간격을 200씩 증가
+                    } else {
+                        break; // Stop drawing if there are no more elements in the x array
+                    }
+                }
+                y += 80; // y 좌표 간격을 80씩 증가
+                i = 0; // Reset the x array index for the next line
+            }
         }
 
         paintComponents(g);
