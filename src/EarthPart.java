@@ -46,6 +46,9 @@ public class EarthPart extends JFrame {
     private int playerHeart = 5;
     //장애물 위치 저장 list
     private ArrayList<int[]> numbers = new ArrayList<>();
+
+    private int addX, addY;
+
     public EarthPart() {
         setUndecorated(true);
         setSize(1920, 1080);
@@ -243,7 +246,9 @@ public class EarthPart extends JFrame {
         }
         for(int[] number : numbers){
             number[1]-=backgroundSpeed;
+
         }
+        checkCollision(rabbitX, rabbitY, numbers);
         repaint();
     }
     //토끼 달리는 모션 구현!
@@ -271,7 +276,33 @@ public class EarthPart extends JFrame {
         }
     }
     //장애물 충돌
-    private void checkCollision(){
+    private void checkCollision(int rabbitX, int rabbitY, ArrayList<int[]> numbers){
+        addX = 0;
+        addY=0;
+        if(isJumping){
+            addX=150;
+            addY=175;
+        }else if(isMovingLeft||isMovingRight){
+            addX=150;
+            addY=225;
+        }else if(isSliding){
+            addX=250;
+            addY=125;
+        }
+
+        //충돌했을 때
+        for(int [] number : numbers){
+            System.out.println(rabbitX+" "+rabbitY+" "+number[1]+" "+number[2]);
+            if(rabbitX+addX>=number[1] &&
+               rabbitX<=number[1]+Obstacle[number[0]].getWidth(null)&&
+                    rabbitY>number[0]+Obstacle[number[0]].getHeight(null) &&
+                    rabbitY+addY<=number[2]
+            )
+            {
+                playerHeart--;
+                break;
+            }
+        }
     }
 
     public static void main(String[] args) {
