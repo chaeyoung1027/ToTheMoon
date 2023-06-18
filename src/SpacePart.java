@@ -26,10 +26,15 @@ public class SpacePart extends JFrame implements KeyListener {
 
     Timer imageTimer;   // 배경 이미지 변경 타이머
 
+    // 달
+    private Image moon = new ImageIcon(ToTheMoon.class.getResource("img/moon.png")).getImage();
+    private int moonY = -392;   // 달 초기 Y 좌표
+    private int moonSpeed = 4;
+
     // 우주선
     private Image[] spaceshipImages = {
-            new ImageIcon(ToTheMoon.class.getResource("spaceship_fire.png")).getImage(),
-            new ImageIcon(ToTheMoon.class.getResource("spaceship_fire2.png")).getImage()
+            new ImageIcon(ToTheMoon.class.getResource("img/Spaceship_fire.png")).getImage(),
+            new ImageIcon(ToTheMoon.class.getResource("img/Spaceship_fire2.png")).getImage()
     };
     private int spaceshipImageIndex = 0;
 
@@ -72,10 +77,40 @@ public class SpacePart extends JFrame implements KeyListener {
         setVisible(true);
 
         gameTimer = new Timer(10, new ActionListener() {
+            private int elapsedTime = 0; // 경과 시간(밀리초)
+            private boolean isMoonFalling = false;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 update();
                 repaint();
+
+                elapsedTime += 10; // 10밀리초마다 경과 시간 증가
+
+                // 경과 시간이 39초(39000밀리초) 이상이면 달 이미지를 내려오도록 설정
+                if (elapsedTime >= 39000 && !isMoonFalling) {
+                    isMoonFalling = true;
+                }
+
+                // 달 이미지가 내려오는 중일 때
+                if (isMoonFalling) {
+                    moonY += moonSpeed; // 달 이미지를 아래로 이동
+
+                    // 달 이미지가 아래로 벗어나면 달 이미지를 초기 위치로 설정하고 게임 클리어 처리
+                    if (moonY > getHeight()) {
+                        moonY = -392;
+                        isMoonFalling = false;
+
+                        // 게임 클리어 처리
+                    }
+                }
+
+                // 경과 시간이 40초(40000밀리초) 이상이면 게임 클리어 처리
+                if (elapsedTime >= 40000) {
+                    gameTimer.stop();
+                    // 게임 클리어 - - -
+                    setVisible(false);
+                }
             }
         });
 
@@ -210,7 +245,7 @@ public class SpacePart extends JFrame implements KeyListener {
                 if(hp <= 0) {
                     gameOver();
                 }
-                shakeTimer.start();
+                startShakeAnimation();
             }
         }
 
@@ -229,8 +264,6 @@ public class SpacePart extends JFrame implements KeyListener {
             }
         }
     }
-
-
 
     private void gameOver() {
         gameTimer.stop();
@@ -394,6 +427,9 @@ public class SpacePart extends JFrame implements KeyListener {
 
         //우주선 그리기
         g.drawImage(spaceshipImages[spaceshipImageIndex], spaceshipX, spaceshipY, null);
+
+        //달 그리기
+        g.drawImage(moon, 0, moonY, null);
 
         //체력바 그리기
         g.setColor(Color.GREEN);
