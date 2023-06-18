@@ -27,7 +27,9 @@ public class ToTheMoonDB {
             e.printStackTrace();
         }
 
+        // Ranking 객체 생성 및 랭킹 정보 설정
         Ranking ranking = new Ranking();
-        ranking.setRankingText(rankingText); // 랭킹 정보를 Ranking 클래스에 설정
+        ranking.setRankingText(rankingText);
+        ranking.setVisible(true);
     }
 }

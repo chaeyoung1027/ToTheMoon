@@ -31,7 +31,12 @@ public class Ranking extends JFrame {
         // 랭킹 정보를 그림
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 46));
-        g.drawString(rankingText, 675, 320); // 위치 및 스타일을 조정하여 적절히 표시
+        String[] rankingLines = rankingText.split("\n");
+        int y = 320; // 시작 y 좌표
+        for (String line : rankingLines) {
+            g.drawString(line, 675, y); // 위치 및 스타일을 조정하여 적절히 표시
+            y += 80; // y 좌표 간격을 200씩 증가
+        }
 
         paintComponents(g);
         this.repaint();    // paint 함수로 돌아감
@@ -44,5 +49,10 @@ public class Ranking extends JFrame {
     // DB 내용을 랭킹 텍스트로 설정하는 메서드
     public void setRankingText(String text) {
         rankingText = text != null ? text : ""; // text가 null인 경우 빈 문자열로 설정
+    }
+
+    // Getter for rankingText
+    public String getRankingText() {
+        return rankingText;
     }
 }
