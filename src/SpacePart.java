@@ -26,17 +26,22 @@ public class SpacePart extends JFrame implements KeyListener {
 
     Timer imageTimer;   // 배경 이미지 변경 타이머
 
+    // 달
+    private Image moon = new ImageIcon(ToTheMoon.class.getResource("img/moon.png")).getImage();
+    private int moonY = -392;   // 달 초기 Y 좌표
+    private int moonSpeed = 4;
+
     // 우주선
     private Image[] spaceshipImages = {
-            new ImageIcon(ToTheMoon.class.getResource("spaceship_fire.png")).getImage(),
-            new ImageIcon(ToTheMoon.class.getResource("spaceship_fire2.png")).getImage()
+            new ImageIcon(ToTheMoon.class.getResource("img/Spaceship_fire.png")).getImage(),
+            new ImageIcon(ToTheMoon.class.getResource("img/Spaceship_fire2.png")).getImage()
     };
     private int spaceshipImageIndex = 0;
 
     private ImageIcon ship1 = new ImageIcon(spaceshipImages[0]);
     private ImageIcon ship2 = new ImageIcon(spaceshipImages[1]);
 
-    private int spaceshipX = 810; // 초기 X 좌표
+    private int spaceshipX = 885; // 초기 X 좌표
     private int spaceshipY = 750; // 초기 Y 좌표
 
     private JLabel imageLabel;
@@ -46,6 +51,13 @@ public class SpacePart extends JFrame implements KeyListener {
     private int hp = 250;
     private Image life = new ImageIcon(ToTheMoon.class.getResource("img/life.png")).getImage();
     Timer hpDecreaseTimer; // HP 감소 타이머
+
+    // 위치바
+    private Image route = new ImageIcon(ToTheMoon.class.getResource("img/route.png")).getImage();
+    private Image loc = new ImageIcon(ToTheMoon.class.getResource("img/loc.png")).getImage();
+    private int locY = 750;
+    Timer routeTimer;   // 위치바 타이머
+    private Image des = new ImageIcon(ToTheMoon.class.getResource("img/des.png")).getImage();
 
     // 장애물 리스트
     private ArrayList<Obstacle> obstacleList = new ArrayList<Obstacle>();
@@ -72,10 +84,38 @@ public class SpacePart extends JFrame implements KeyListener {
         setVisible(true);
 
         gameTimer = new Timer(10, new ActionListener() {
+            private int elapsedTime = 0; // 경과 시간(밀리초)
+            private boolean isMoonFalling = false;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 update();
                 repaint();
+
+                elapsedTime += 10; // 10밀리초마다 경과 시간 증가
+
+                // 해당 경과 시간 이상이면 달 이미지를 내려오도록 설정
+                if (elapsedTime >= 19000 && !isMoonFalling) {
+                    isMoonFalling = true;
+                }
+
+                // 달 이미지가 내려오는 중일 때
+                if (isMoonFalling) {
+                    moonY += moonSpeed; // 달 이미지를 아래로 이동
+
+                    // 달 이미지가 아래로 벗어나면 달 이미지를 초기 위치로 설정하고 게임 클리어 처리
+                    if (moonY > getHeight()) {
+                        moonY = -392;
+                        isMoonFalling = false;
+                    }
+                }
+
+                // 경과 시간에 따른 게임 클리어 처리
+                if (elapsedTime >= 20000) {
+                    gameTimer.stop();
+                    // 게임 클리어 처리 - - -
+                    setVisible(false);
+                }
             }
         });
 
@@ -137,12 +177,25 @@ public class SpacePart extends JFrame implements KeyListener {
                 repaint();
             }
         });
+
+        // 위치바 이동 타이머 설정
+        routeTimer = new Timer(100, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // 이미지의 위치를 업데이트
+                locY -= 1;
+
+                // 화면을 다시 그리기
+                repaint();
+            }
+        });
     }
 
     public void startGame() {
         gameTimer.start();
         generateObstacles();
         generateItems();
+        routeTimer.start();
     }
 
     private void update() {
@@ -152,7 +205,7 @@ public class SpacePart extends JFrame implements KeyListener {
     }
 
     private void decreaseHP() {
-        hp -= 5; // 1초에 5씩 감소
+        hp -= 3; // 1초에 3씩 감소
 
         if (hp <= 0) {
             gameOver();
@@ -210,7 +263,7 @@ public class SpacePart extends JFrame implements KeyListener {
                 if(hp <= 0) {
                     gameOver();
                 }
-                shakeTimer.start();
+                startShakeAnimation();
             }
         }
 
@@ -230,8 +283,6 @@ public class SpacePart extends JFrame implements KeyListener {
         }
     }
 
-
-
     private void gameOver() {
         gameTimer.stop();
         imageTimer.stop();
@@ -239,6 +290,7 @@ public class SpacePart extends JFrame implements KeyListener {
         obstacleTimer.stop();
         itemTimer.stop();
         hpDecreaseTimer.stop();
+        routeTimer.stop();
         new GameOver();
         setVisible(false);
     }
@@ -395,10 +447,18 @@ public class SpacePart extends JFrame implements KeyListener {
         //우주선 그리기
         g.drawImage(spaceshipImages[spaceshipImageIndex], spaceshipX, spaceshipY, null);
 
+        //달 그리기
+        g.drawImage(moon, 0, moonY, null);
+
         //체력바 그리기
         g.setColor(Color.GREEN);
         g.fillRect(1605, 980, hp, 20);
         g.drawImage(life, 1548, 957, null);
+
+        //위치바 그리기
+        g.drawImage(route, 1800, 250, null);
+        g.drawImage(loc, 1774, locY, null);
+        g.drawImage(des, 1774, 225,null);
 
         //장애물 그리기
         for(Obstacle obstacle : obstacleList) {
