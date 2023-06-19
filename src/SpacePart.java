@@ -476,14 +476,14 @@ public class SpacePart extends JFrame implements KeyListener {
         super.paintComponents(g);
         // 캐릭터 이동 로직
         if (moveUp && spaceshipY > 0) {
-            spaceshipY -= 6;
+            spaceshipY -= 10;
         } else if (moveDown && spaceshipY < 1080 - 254) {
-            spaceshipY += 6;
+            spaceshipY += 10;
         }
         if (moveLeft && spaceshipX > 0) {
-            spaceshipX -= 6;
+            spaceshipX -= 10;
         } else if (moveRight && spaceshipX < 1920 - 150) {
-            spaceshipX += 6;
+            spaceshipX += 10;
         }
 
         g.drawImage(background, 0, yPos1, null); // 첫 번째 배경 이미지 그리기 위치에 yPos1 변수를 사용하여 스크롤 효과 적용
