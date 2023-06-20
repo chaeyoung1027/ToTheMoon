@@ -95,7 +95,7 @@ public class SpacePart extends JFrame implements KeyListener {
                 elapsedTime += 10; // 10밀리초마다 경과 시간 증가
 
                 // 해당 경과 시간 이상이면 달 이미지를 내려오도록 설정
-                if (elapsedTime >= 19000 && !isMoonFalling) {
+                if (elapsedTime >= 18000 && !isMoonFalling) {
                     isMoonFalling = true;
                 }
 
@@ -111,9 +111,10 @@ public class SpacePart extends JFrame implements KeyListener {
                 }
 
                 // 경과 시간에 따른 게임 클리어 처리
-                if (elapsedTime >= 20000) {
+                if (elapsedTime >= 18850) {
                     gameTimer.stop();
                     // 게임 클리어 처리 - - -
+                    System.out.println("클리어");
                     setVisible(false);
                 }
             }
@@ -163,9 +164,9 @@ public class SpacePart extends JFrame implements KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (shakeCount % 2 == 0) {
-                    spaceshipX -= 10; // 좌로 흔들림
+                    spaceshipX -= 15; // 좌로 흔들림
                 } else {
-                    spaceshipX += 10; // 우로 흔들림
+                    spaceshipX += 15; // 우로 흔들림
                 }
 
                 shakeCount++;
@@ -205,7 +206,7 @@ public class SpacePart extends JFrame implements KeyListener {
     }
 
     private void decreaseHP() {
-        hp -= 3; // 1초에 3씩 감소
+        hp -= 6; // 1초에 3씩 감소
 
         if (hp <= 0) {
             gameOver();
@@ -476,14 +477,14 @@ public class SpacePart extends JFrame implements KeyListener {
         super.paintComponents(g);
         // 캐릭터 이동 로직
         if (moveUp && spaceshipY > 0) {
-            spaceshipY -= 6;
+            spaceshipY -= 10;
         } else if (moveDown && spaceshipY < 1080 - 254) {
-            spaceshipY += 6;
+            spaceshipY += 10;
         }
         if (moveLeft && spaceshipX > 0) {
-            spaceshipX -= 6;
+            spaceshipX -= 10;
         } else if (moveRight && spaceshipX < 1920 - 150) {
-            spaceshipX += 6;
+            spaceshipX += 10;
         }
 
         g.drawImage(background, 0, yPos1, null); // 첫 번째 배경 이미지 그리기 위치에 yPos1 변수를 사용하여 스크롤 효과 적용
