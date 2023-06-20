@@ -95,7 +95,7 @@ public class SpacePart extends JFrame implements KeyListener {
                 elapsedTime += 10; // 10밀리초마다 경과 시간 증가
 
                 // 해당 경과 시간 이상이면 달 이미지를 내려오도록 설정
-                if (elapsedTime >= 19000 && !isMoonFalling) {
+                if (elapsedTime >= 18000 && !isMoonFalling) {
                     isMoonFalling = true;
                 }
 
@@ -111,9 +111,10 @@ public class SpacePart extends JFrame implements KeyListener {
                 }
 
                 // 경과 시간에 따른 게임 클리어 처리
-                if (elapsedTime >= 20000) {
+                if (elapsedTime >= 18850) {
                     gameTimer.stop();
                     // 게임 클리어 처리 - - -
+                    System.out.println("클리어");
                     setVisible(false);
                 }
             }
@@ -163,9 +164,9 @@ public class SpacePart extends JFrame implements KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (shakeCount % 2 == 0) {
-                    spaceshipX -= 10; // 좌로 흔들림
+                    spaceshipX -= 15; // 좌로 흔들림
                 } else {
-                    spaceshipX += 10; // 우로 흔들림
+                    spaceshipX += 15; // 우로 흔들림
                 }
 
                 shakeCount++;
@@ -205,7 +206,7 @@ public class SpacePart extends JFrame implements KeyListener {
     }
 
     private void decreaseHP() {
-        hp -= 3; // 1초에 3씩 감소
+        hp -= 6; // 1초에 3씩 감소
 
         if (hp <= 0) {
             gameOver();
