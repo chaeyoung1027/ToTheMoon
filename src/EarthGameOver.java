@@ -3,9 +3,9 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class GameOver extends JFrame {
+public class EarthGameOver extends JFrame {
     private Image screenImage;
-    private Image background = new ImageIcon(getClass().getResource("img/GameOverBackground.png")).getImage();
+    private Image background = new ImageIcon(getClass().getResource("img/EarthGameOver.png")).getImage();
     private Graphics screenGraphic;
     //다시하기 버튼
     private final ImageIcon retryButtonImg = new ImageIcon(getClass().getResource("img/retry.png"));
@@ -14,7 +14,7 @@ public class GameOver extends JFrame {
     private final ImageIcon GoMainButtonImg = new ImageIcon(getClass().getResource("img/GoMain.png"));
     private JButton GoMainButton = new JButton( GoMainButtonImg);
 
-    public GameOver() {
+    public EarthGameOver() {
         setUndecorated(true);
         setSize(1920, 1080);
         setVisible(true);
@@ -81,6 +81,6 @@ public class GameOver extends JFrame {
     }
 
     public static void main(String[] args) {
-        new GameOver();
+        new EarthGameOver();
     }
 }
