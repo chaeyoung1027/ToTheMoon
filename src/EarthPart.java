@@ -86,8 +86,8 @@ public class EarthPart extends JFrame {
         Image leftRabbitRun2 = new ImageIcon(getClass().getResource("img/left_rabbit_run2.png")).getImage();
         leftRabbitJump = new ImageIcon(getClass().getResource("img/left_rabbit_jump.png")).getImage();
         leftRabbitSliding = new ImageIcon(getClass().getResource("img/left_rabbit_sliding.png")).getImage();
-        Obstacle[0] = new ImageIcon(getClass().getResource("img/bird.png")).getImage();
-        Obstacle[1] = new ImageIcon(getClass().getResource("img/bird.png")).getImage();
+        Obstacle[0] = new ImageIcon(getClass().getResource("img/hurdle.png")).getImage();
+        Obstacle[1] = new ImageIcon(getClass().getResource("img/plant2.png")).getImage();
         Obstacle[2] = new ImageIcon(getClass().getResource("img/hurdle.png")).getImage();
         Obstacle[3] = new ImageIcon(getClass().getResource("img/plant.png")).getImage();
         Obstacle[4] = new ImageIcon(getClass().getResource("img/plant2.png")).getImage();
@@ -133,7 +133,7 @@ public class EarthPart extends JFrame {
                 elapsedTime += 10; // 10밀리초마다 경과 시간 증가
 
                 // 경과 시간에 따른 게임 클리어 처리
-                if (elapsedTime >= 20000) {
+                if (elapsedTime >= 10000) {
                     gameTimer.stop();
                     // 게임 클리어 처리 - - -
                     //new SpaceRule();
@@ -188,8 +188,10 @@ public class EarthPart extends JFrame {
             if (backgroundX % 400 == 0) {
                 i++;
                 randnum = (int) (Math.random() * 5);
-                if(randnum==0||randnum==1){ //구름
-                    y = 550;
+                if(randnum==0){ //허들
+                    y = 720;
+                }else if(randnum==1) {  //선인장
+                    y = 700;
                 }else if(randnum==2){   //허들
                     y=720;
                 }else{      //선인장
@@ -391,7 +393,7 @@ public class EarthPart extends JFrame {
 
         int rabbitWidth = currentRabbitImage.getWidth(null);
         int rabbitHeight = currentRabbitImage.getHeight(null);
-        Rectangle rabbitRect = new Rectangle(rabbitX, rabbitY, rabbitWidth, rabbitHeight);
+        Rectangle rabbitRect = new Rectangle(rabbitX, rabbitY+10, rabbitWidth-20, rabbitHeight);
 
         for (int[] obstacle : numbers) {
             // 장애물 이미지, X좌표, Y좌표
@@ -400,7 +402,7 @@ public class EarthPart extends JFrame {
             int obstacleY = obstacle[2];
             int obstacleWidth = obstacleImage.getWidth(null);
             int obstacleHeight = obstacleImage.getHeight(null);
-            Rectangle obstacleRect = new Rectangle(obstacleX, obstacleY, obstacleWidth, obstacleHeight);
+            Rectangle obstacleRect = new Rectangle(obstacleX+10, obstacleY+10, obstacleWidth-10, obstacleHeight);
 
             if (rabbitRect.intersects(obstacleRect) && !isCollisionDetected) {
                 // 충돌 발생! 처리 로직을 여기에 작성
