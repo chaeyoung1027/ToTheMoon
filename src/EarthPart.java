@@ -68,6 +68,7 @@ public class EarthPart extends JFrame {
         setLayout(null);
         setFocusable(true);
         setVisible(true);
+        init();
         //이미지 설정
         earthBackground = new ImageIcon(getClass().getResource("img/EarthBackground.png")).getImage();
         Image rightRabbitRun1 = new ImageIcon(getClass().getResource("img/rabbit_run1.png")).getImage();
@@ -116,6 +117,20 @@ public class EarthPart extends JFrame {
         setContentPane(new MyPanel());
 
     }
+    private void init(){
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setVisible(true);
+        // 주기적으로 업데이트 메서드 호출
+        Timer timer = new Timer(16, e -> {
+            try {
+                update();
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        timer.start();
+    }
+
     private class MyPanel extends JPanel {
         @Override
         protected void paintComponent(Graphics g) {

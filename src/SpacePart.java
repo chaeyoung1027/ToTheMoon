@@ -292,7 +292,7 @@ public class SpacePart extends JFrame implements KeyListener {
         itemTimer.stop();
         hpDecreaseTimer.stop();
         routeTimer.stop();
-        new GameOver();
+        new SpaceGameOver();
         setVisible(false);
     }
 
