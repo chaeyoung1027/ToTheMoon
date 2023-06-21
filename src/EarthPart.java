@@ -86,8 +86,8 @@ public class EarthPart extends JFrame {
         Image leftRabbitRun2 = new ImageIcon(getClass().getResource("img/left_rabbit_run2.png")).getImage();
         leftRabbitJump = new ImageIcon(getClass().getResource("img/left_rabbit_jump.png")).getImage();
         leftRabbitSliding = new ImageIcon(getClass().getResource("img/left_rabbit_sliding.png")).getImage();
-        Obstacle[0] = new ImageIcon(getClass().getResource("img/Cloud.png")).getImage();
-        Obstacle[1] = new ImageIcon(getClass().getResource("img/Cloud2.png")).getImage();
+        Obstacle[0] = new ImageIcon(getClass().getResource("img/bird.png")).getImage();
+        Obstacle[1] = new ImageIcon(getClass().getResource("img/bird.png")).getImage();
         Obstacle[2] = new ImageIcon(getClass().getResource("img/hurdle.png")).getImage();
         Obstacle[3] = new ImageIcon(getClass().getResource("img/plant.png")).getImage();
         Obstacle[4] = new ImageIcon(getClass().getResource("img/plant2.png")).getImage();
