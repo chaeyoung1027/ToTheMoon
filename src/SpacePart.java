@@ -74,6 +74,8 @@ public class SpacePart extends JFrame implements KeyListener {
 
     Timer itemTimer;
 
+    private boolean collisionDetectionEnabled = true;   // 충돌 처리 활성화 유무
+
     public SpacePart() {
         setUndecorated(true);
         setSize(1920, 1080);
@@ -113,6 +115,7 @@ public class SpacePart extends JFrame implements KeyListener {
                 // 경과 시간에 따른 게임 클리어 처리
                 if (elapsedTime >= 18850) {
                     gameTimer.stop();
+                    collisionDetectionEnabled = false;  // 충돌 감지 비활성화
                     // 게임 클리어 처리 - - -
                     System.out.println("클리어");
                     setVisible(false);
@@ -253,6 +256,10 @@ public class SpacePart extends JFrame implements KeyListener {
     }
 
     private void checkCollision() {
+        if(!collisionDetectionEnabled) {
+            return; // 충돌 감지 비활성화 상태면 종료
+        }
+
         Rectangle shipRect = new Rectangle(spaceshipX, spaceshipY, 96, 205);
         //장애물 충돌 검사
         for(int i=obstacleList.size()-1; i>=0; i--) {
