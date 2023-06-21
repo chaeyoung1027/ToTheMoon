@@ -1,11 +1,13 @@
-import org.w3c.dom.css.Rect;
-
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.TimerTask;
+
 public class EarthPart extends JFrame {
     //이미지
     private Image earthBackground;
@@ -46,8 +48,17 @@ public class EarthPart extends JFrame {
     private int playerHeart = 5;
     //장애물 위치 저장 list
     private ArrayList<int[]> numbers = new ArrayList<>();
-
-    private int addX, addY;
+    // 충돌 상태 기록 변수
+    private boolean isCollisionDetected = false;
+    // 충돌 후 2초간 충돌 인식 안 되도록 하는 타이머
+    Timer collisionTimer;
+    // 게임 타이머
+    private Timer timer;
+    private int elapsedTime; // 경과 시간 변수
+    // 충돌 시 토끼 흔들림 변수
+    private boolean isRabbitShaking;
+    private int rabbitShakeCount;
+    private final int rabbitShakeDuration = 200; // 토끼 흔들림 지속 시간(ms)
 
     public EarthPart() {
         setUndecorated(true);
@@ -75,7 +86,7 @@ public class EarthPart extends JFrame {
         Obstacle[3] = new ImageIcon(getClass().getResource("img/plant.png")).getImage();
         Obstacle[4] = new ImageIcon(getClass().getResource("img/plant2.png")).getImage();
         heart = new ImageIcon(getClass().getResource("img/heart.png")).getImage();
-        emptyHeart = new ImageIcon(getClass().getResource("img/empty_heart.png")).getImage();
+        emptyHeart = new ImageIcon(getClass().getResource("empty_heart.png")).getImage();
         //이미지 크기 조절을 위한 변수
         int rabbitWidth = rightRabbitRun1.getWidth(null);
         int rabbitHeight = rightRabbitRun1.getHeight(null);
@@ -103,6 +114,7 @@ public class EarthPart extends JFrame {
         leftRabbitSliding = leftRabbitSliding.getScaledInstance(slideScaledWidth, slideScaledHeight, Image.SCALE_SMOOTH);
         addKeyListener(new MyKeyListener());
         setContentPane(new MyPanel());
+
     }
     private class MyPanel extends JPanel {
         @Override
@@ -136,17 +148,34 @@ public class EarthPart extends JFrame {
             int rabbitWidth = currentRabbitImage.getWidth(null);
             int rabbitHeight = currentRabbitImage.getHeight(null);
             int slidingOffsetY = 80; // 슬라이딩 이미지의 Y 좌표 조절 값
-            if(isSliding&&isJumping){
-                g.drawImage(currentRabbitImage, rabbitX, rabbitY,  null);
+            if (isRabbitShaking) {
+                if (rabbitShakeCount % 20 < 10) {
+                    if(isSliding&&isJumping){
+                        g.drawImage(currentRabbitImage, rabbitX, rabbitY,  null);
+                    }
+                    else if (isSliding) {
+                        int slidingX = rabbitX + (rabbitWidth / 2) - (rabbitWidth / 4);
+                        int slidingY = rabbitY + (rabbitHeight / 2) - (rabbitHeight / 4) + slidingOffsetY;
+                        g.drawImage(currentRabbitImage, slidingX, slidingY, null);
+                    }
+                    else {
+                        g.drawImage(currentRabbitImage, rabbitX, rabbitY, null);
+                    }
+                }
+            } else {
+                if(isSliding&&isJumping){
+                    g.drawImage(currentRabbitImage, rabbitX, rabbitY,  null);
+                }
+                else if (isSliding) {
+                    int slidingX = rabbitX + (rabbitWidth / 2) - (rabbitWidth / 4);
+                    int slidingY = rabbitY + (rabbitHeight / 2) - (rabbitHeight / 4) + slidingOffsetY;
+                    g.drawImage(currentRabbitImage, slidingX, slidingY, null);
+                }
+                else {
+                    g.drawImage(currentRabbitImage, rabbitX, rabbitY, null);
+                }
             }
-            else if (isSliding) {
-                int slidingX = rabbitX + (rabbitWidth / 2) - (rabbitWidth / 4);
-                int slidingY = rabbitY + (rabbitHeight / 2) - (rabbitHeight / 4) + slidingOffsetY;
-                g.drawImage(currentRabbitImage, slidingX, slidingY, null);
-            }
-            else {
-                g.drawImage(currentRabbitImage, rabbitX, rabbitY, null);
-            }
+
             //플레이어 생명
             for (int i = 0; i < playerHeart; i++) { //하트 그리기
                 g.drawImage(heart, 40 + i * 85, 40, this);
@@ -159,11 +188,17 @@ public class EarthPart extends JFrame {
             for(int[] number : numbers){
                 g.drawImage(Obstacle[number[0]], number[1], number[2], this);
             }
+
+            //게임오버 조건 : 범위 벗어남, 목숨 0
+            int rabbitLeftEdge = rabbitX - 10;
+            int rabbitRightEdge = rabbitX + scaledWidth;
+            if (rabbitLeftEdge + 200 < 0 || rabbitRightEdge > getWidth()||playerHeart==0) {
+                System.out.println("게임 오버");
+                new EarthGameOver();
+                setVisible(false);
+            }
+
         }
-    }
-    //충돌처리
-    private void chechCollision(){
-//        Rectangle Obstacle = new Rectangle()
     }
     private class MyKeyListener implements KeyListener {
         @Override
@@ -220,7 +255,7 @@ public class EarthPart extends JFrame {
         rabbitY = initialY;
         isJumping = false;
     }
-    public void update() {
+    public void update() throws InterruptedException {
         boolean isMoving = isMovingRight || isMovingLeft; // 토끼가 이동 중인지 확인
         if (isMoving) {
             if (isMovingRight) {
@@ -231,14 +266,6 @@ public class EarthPart extends JFrame {
         } else {
             rabbitX -= backgroundSpeed;
         }
-        //게임오버 조건 : 범위 벗어남, 목숨 0
-        int rabbitLeftEdge = rabbitX - 10;
-        int rabbitRightEdge = rabbitX + scaledWidth;
-        if (rabbitLeftEdge + 200 < 0 || rabbitRightEdge > getWidth()||playerHeart==0) {
-            System.out.println("게임 오버");
-//            new GameOver();
-//            setVisible(false);
-        }
         frameCount++;
         if (frameCount % frameDelay == 0 && isMoving) { // 오른쪽 또는 왼쪽으로 이동 중에만 이미지 변경
             frameCount = 0;
@@ -246,9 +273,17 @@ public class EarthPart extends JFrame {
         }
         for(int[] number : numbers){
             number[1]-=backgroundSpeed;
-
         }
-        checkCollision(rabbitX, rabbitY, numbers);
+        checkCollision();
+        // 충돌 시 토끼 흔들리기
+        if (isRabbitShaking) {
+            rabbitShakeCount += 10;
+            if (rabbitShakeCount >= rabbitShakeDuration) {
+                isRabbitShaking = false;
+                rabbitShakeCount = 0;
+            }
+        }
+
         repaint();
     }
     //토끼 달리는 모션 구현!
@@ -275,33 +310,88 @@ public class EarthPart extends JFrame {
             return isJumping ? rightRabbitJump : (isSliding ? rightRabbitSliding : rightRabbit[1]);
         }
     }
-    //장애물 충돌
-    private void checkCollision(int rabbitX, int rabbitY, ArrayList<int[]> numbers){
-        addX = 0;
-        addY=0;
-        if(isJumping){
-            addX=150;
-            addY=175;
-        }else if(isMovingLeft||isMovingRight){
-            addX=150;
-            addY=225;
-        }else if(isSliding){
-            addX=250;
-            addY=125;
+
+    // 장애물 충돌 체크
+    private void checkCollision() throws InterruptedException {
+
+        // 토끼 이미지 배열
+        Image[] rabbitImages = getRabbitImages();
+        // 점프 및 슬라이딩 이미지
+        Image jumpImage = getJumpImage();
+        Image slidingImage = getSlidingImage();
+
+        // 토끼의 현재 이미지 가져오기
+        Image currentRabbitImage;
+        if (isJumping) {
+            currentRabbitImage = jumpImage;
+        } else if (isSliding) {
+            currentRabbitImage = slidingImage;
+        } else {
+            int frameIndex = frameCount / frameDelay % rabbitImages.length;
+            currentRabbitImage = rabbitImages[frameIndex];
         }
 
-        //충돌했을 때
-        for(int [] number : numbers){
-            System.out.println(rabbitX+" "+rabbitY+" "+number[1]+" "+number[2]);
-            if(rabbitX+addX>=number[1] &&
-               rabbitX<=number[1]+Obstacle[number[0]].getWidth(null)&&
-                    rabbitY>number[0]+Obstacle[number[0]].getHeight(null) &&
-                    rabbitY+addY<=number[2]
-            )
-            {
-                playerHeart--;
-                break;
+        int rabbitWidth = currentRabbitImage.getWidth(null);
+        int rabbitHeight = currentRabbitImage.getHeight(null);
+        Rectangle rabbitRect = new Rectangle(rabbitX, rabbitY, rabbitWidth, rabbitHeight);
+
+        for (int[] obstacle : numbers) {
+            // 장애물 이미지, X좌표, Y좌표
+            Image obstacleImage = Obstacle[obstacle[0]];
+            int obstacleX = obstacle[1];
+            int obstacleY = obstacle[2];
+            int obstacleWidth = obstacleImage.getWidth(null);
+            int obstacleHeight = obstacleImage.getHeight(null);
+            Rectangle obstacleRect = new Rectangle(obstacleX, obstacleY, obstacleWidth, obstacleHeight);
+
+            if (rabbitRect.intersects(obstacleRect) && !isCollisionDetected) {
+                // 충돌 발생! 처리 로직을 여기에 작성
+                System.out.println("토끼와 장애물이 충돌했습니다!");
+
+                // 충돌 감지
+                playerHeart -= 1;
+                isCollisionDetected = true;
+                // 충돌 시 토끼 흔들리도록 설정
+                isRabbitShaking = true;
+
+                collisionTimer = new Timer(2000, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        isCollisionDetected = false;
+                    }
+                });
+
+                collisionTimer.setRepeats(false); // 타이머가 반복 실행되지 않도록 설정합니다.
+                collisionTimer.start(); // 타이머를 실행합니다.
             }
+        }
+    }
+
+
+    // 토끼 이미지 배열 반환
+    private Image[] getRabbitImages() {
+        if (isMovingLeft) {
+            return leftRabbit;
+        } else {
+            return rightRabbit;
+        }
+    }
+
+    // 점프 이미지 반환
+    private Image getJumpImage() {
+        if (isMovingLeft) {
+            return leftRabbitJump;
+        } else {
+            return rightRabbitJump;
+        }
+    }
+
+    // 슬라이딩 이미지 반환
+    private Image getSlidingImage() {
+        if (isMovingLeft) {
+            return leftRabbitSliding;
+        } else {
+            return rightRabbitSliding;
         }
     }
 
@@ -311,7 +401,13 @@ public class EarthPart extends JFrame {
             earthPart.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             earthPart.setVisible(true);
             //주기적으로 업데이트 메소드 호출
-            Timer timer = new Timer(16, e -> earthPart.update());
+            Timer timer = new Timer(16, e -> {
+                try {
+                    earthPart.update();
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
+            });
             timer.start();
         });
     }
