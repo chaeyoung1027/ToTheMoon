@@ -64,6 +64,7 @@ public class EarthPart extends JFrame {
     private Image route;
     private Timer routeTimer;
     private int locX = 670;
+    private boolean collisionDetectionEnabled = true;   // 충돌 처리 활성화 유무
 
     public EarthPart() {
         setUndecorated(true);
@@ -133,7 +134,8 @@ public class EarthPart extends JFrame {
                 elapsedTime += 10; // 10밀리초마다 경과 시간 증가
 
                 // 경과 시간에 따른 게임 클리어 처리
-                if (elapsedTime >= 10000) {
+                if (elapsedTime >= 25000) {
+                    collisionDetectionEnabled = false;
                     gameTimer.stop();
                     // 게임 클리어 처리 - - -
                     //new SpaceRule();
@@ -142,6 +144,8 @@ public class EarthPart extends JFrame {
                 }
             }
         });
+
+        gameTimer.start();
 
         // 위치바 이동 타이머 설정
         routeTimer = new Timer(100, new ActionListener() {
@@ -253,6 +257,7 @@ public class EarthPart extends JFrame {
             int rabbitRightEdge = rabbitX + scaledWidth;
             if (rabbitLeftEdge + 200 < 0 || rabbitRightEdge > getWidth()||playerHeart==0) {
                 System.out.println("게임 오버");
+                collisionDetectionEnabled = false;
                 routeTimer.stop();
                 new EarthGameOver();
                 setVisible(false);
@@ -373,7 +378,9 @@ public class EarthPart extends JFrame {
 
     // 장애물 충돌 체크
     private void checkCollision() throws InterruptedException {
-
+        if(!collisionDetectionEnabled) {
+            return; // 충돌 감지 비활성화 상태면 종료
+        }
         // 토끼 이미지 배열
         Image[] rabbitImages = getRabbitImages();
         // 점프 및 슬라이딩 이미지
@@ -402,7 +409,7 @@ public class EarthPart extends JFrame {
             int obstacleY = obstacle[2];
             int obstacleWidth = obstacleImage.getWidth(null);
             int obstacleHeight = obstacleImage.getHeight(null);
-            Rectangle obstacleRect = new Rectangle(obstacleX+10, obstacleY+10, obstacleWidth-10, obstacleHeight);
+            Rectangle obstacleRect = new Rectangle(obstacleX+10, obstacleY+10, obstacleWidth-20, obstacleHeight);
 
             if (rabbitRect.intersects(obstacleRect) && !isCollisionDetected) {
                 // 충돌 발생! 처리 로직을 여기에 작성
