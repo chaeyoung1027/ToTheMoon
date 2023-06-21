@@ -19,6 +19,7 @@ public class EarthPart extends JFrame {
     private Image leftRabbitSliding;
     private Image heart;
     private Image emptyHeart;
+    private Image rabbit_face;
     //장애물
     private Image[] Obstacle = new Image[5];
     //이동 확인
@@ -53,12 +54,16 @@ public class EarthPart extends JFrame {
     // 충돌 후 2초간 충돌 인식 안 되도록 하는 타이머
     Timer collisionTimer;
     // 게임 타이머
-    private Timer timer;
+    private Timer gameTimer;
     private int elapsedTime; // 경과 시간 변수
     // 충돌 시 토끼 흔들림 변수
     private boolean isRabbitShaking;
     private int rabbitShakeCount;
     private final int rabbitShakeDuration = 200; // 토끼 흔들림 지속 시간(ms)
+    // 위치바
+    private Image route;
+    private Timer routeTimer;
+    private int locX = 670;
 
     public EarthPart() {
         setUndecorated(true);
@@ -87,6 +92,8 @@ public class EarthPart extends JFrame {
         Obstacle[4] = new ImageIcon(getClass().getResource("img/plant2.png")).getImage();
         heart = new ImageIcon(getClass().getResource("img/heart.png")).getImage();
         emptyHeart = new ImageIcon(getClass().getResource("empty_heart.png")).getImage();
+        route = new ImageIcon(getClass().getResource("img/route2.png")).getImage();
+        rabbit_face = new ImageIcon(getClass().getResource("img/rabbit_face.png")).getImage();
         //이미지 크기 조절을 위한 변수
         int rabbitWidth = rightRabbitRun1.getWidth(null);
         int rabbitHeight = rightRabbitRun1.getHeight(null);
@@ -114,6 +121,38 @@ public class EarthPart extends JFrame {
         leftRabbitSliding = leftRabbitSliding.getScaledInstance(slideScaledWidth, slideScaledHeight, Image.SCALE_SMOOTH);
         addKeyListener(new MyKeyListener());
         setContentPane(new MyPanel());
+
+        gameTimer = new Timer(10, new ActionListener() {
+            private int elapsedTime = 0; // 경과 시간(밀리초)
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                repaint();
+
+                elapsedTime += 10; // 10밀리초마다 경과 시간 증가
+
+                // 경과 시간에 따른 게임 클리어 처리
+                if (elapsedTime >= 20000) {
+                    gameTimer.stop();
+                    // 게임 클리어 처리 - - -
+                    //new SpaceRule();
+                    System.out.println("클리어");
+                    setVisible(false);
+                }
+            }
+        });
+
+        // 위치바 이동 타이머 설정
+        routeTimer = new Timer(100, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // 이미지의 위치를 업데이트
+                locX += 2;
+
+                // 화면을 다시 그리기
+                repaint();
+            }
+        });
 
     }
     private class MyPanel extends JPanel {
@@ -189,11 +228,15 @@ public class EarthPart extends JFrame {
                 g.drawImage(Obstacle[number[0]], number[1], number[2], this);
             }
 
+            g.drawImage(route, 700,870, null);
+            g.drawImage(rabbit_face, locX, 950, null);
+
             //게임오버 조건 : 범위 벗어남, 목숨 0
             int rabbitLeftEdge = rabbitX - 10;
             int rabbitRightEdge = rabbitX + scaledWidth;
             if (rabbitLeftEdge + 200 < 0 || rabbitRightEdge > getWidth()||playerHeart==0) {
                 System.out.println("게임 오버");
+                routeTimer.stop();
                 new EarthGameOver();
                 setVisible(false);
             }
@@ -283,7 +326,7 @@ public class EarthPart extends JFrame {
                 rabbitShakeCount = 0;
             }
         }
-
+        routeTimer.start();
         repaint();
     }
     //토끼 달리는 모션 구현!
