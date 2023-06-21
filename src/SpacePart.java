@@ -76,6 +76,12 @@ public class SpacePart extends JFrame implements KeyListener {
 
     private boolean collisionDetectionEnabled = true;   // 충돌 처리 활성화 유무
 
+    private int score;
+
+    public SpacePart(int score) {
+        this.score = score;
+    }
+
     public SpacePart() {
         setUndecorated(true);
         setSize(1920, 1080);
@@ -95,6 +101,7 @@ public class SpacePart extends JFrame implements KeyListener {
                 repaint();
 
                 elapsedTime += 10; // 10밀리초마다 경과 시간 증가
+                score -= 10;
 
                 // 해당 경과 시간 이상이면 달 이미지를 내려오도록 설정
                 if (elapsedTime >= 18000 && !isMoonFalling) {
@@ -267,6 +274,7 @@ public class SpacePart extends JFrame implements KeyListener {
             Rectangle obstacleRect = new Rectangle(obstacle.x, obstacle.y, obstacle.getWidth()-20, obstacle.getHeight()-30);
             if(shipRect.intersects(obstacleRect)) {
                 hp -= obstacle.getHPDecrease();
+                score -= 100;
                 obstacleList.remove(i);
                 if(hp <= 0) {
                     gameOver();
@@ -280,6 +288,7 @@ public class SpacePart extends JFrame implements KeyListener {
             Item item = itemList.get(i);
             Rectangle itemRect = new Rectangle(item.x, item.y, item.getWidth(), item.getHeight());
             if (shipRect.intersects(itemRect)) {
+                score += 100;
                 if(hp > 250) {
                     hp += 0;
                 }
@@ -477,6 +486,9 @@ public class SpacePart extends JFrame implements KeyListener {
         for(Item item : itemList) {
             g.drawImage(item.itemImage, item.x, item.y, null);
         }
+
+        //점수 띄우기
+        g.drawString(Integer.toString(score), 300, 500);
 
     }
 

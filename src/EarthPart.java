@@ -65,6 +65,8 @@ public class EarthPart extends JFrame {
     private Timer routeTimer;
     private int locX = 670;
     private boolean collisionDetectionEnabled = true;   // 충돌 처리 활성화 유무
+    //점수 초기화
+    int score = 100000;
 
     public EarthPart() {
         setUndecorated(true);
@@ -132,14 +134,15 @@ public class EarthPart extends JFrame {
                 repaint();
 
                 elapsedTime += 10; // 10밀리초마다 경과 시간 증가
+                score -= 10;
 
                 // 경과 시간에 따른 게임 클리어 처리
                 if (elapsedTime >= 25000) {
                     collisionDetectionEnabled = false;
                     gameTimer.stop();
                     // 게임 클리어 처리 - - -
-                    //new SpaceRule();
                     System.out.println("클리어");
+                    new SpaceRule();
                     setVisible(false);
                 }
             }
@@ -251,6 +254,9 @@ public class EarthPart extends JFrame {
 
             g.drawImage(route, 700,870, null);
             g.drawImage(rabbit_face, locX, 950, null);
+
+            //점수 띄우기
+            g.drawString(Integer.toString(y), 300, 500);
 
             //게임오버 조건 : 범위 벗어남, 목숨 0
             int rabbitLeftEdge = rabbitX - 10;
@@ -417,6 +423,8 @@ public class EarthPart extends JFrame {
 
                 // 충돌 감지
                 playerHeart -= 1;
+                // 점수 -100
+                score -= 100;
                 isCollisionDetected = true;
                 // 충돌 시 토끼 흔들리도록 설정
                 isRabbitShaking = true;
@@ -461,6 +469,8 @@ public class EarthPart extends JFrame {
             return rightRabbitSliding;
         }
     }
+
+    SpacePart s = new SpacePart(score); //점수 넘겨주기
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
