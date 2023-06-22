@@ -6,12 +6,12 @@ public class ToTheMoonDB {
         String userName = "root";
         String password = "mirim";
 
-        String rankingText = ""; // 랭킹 정보를 저장할 변수
+        String rankingText = "";
 
         try {
             Connection connection = DriverManager.getConnection(url, userName, password);
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM ranking order by score desc");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM ranking ORDER BY score DESC");
 
             int rank = 1;
             while(resultSet.next()){
@@ -27,9 +27,26 @@ public class ToTheMoonDB {
             e.printStackTrace();
         }
 
-        // Ranking 객체 생성 및 랭킹 정보 설정
         Ranking ranking = new Ranking();
         ranking.setRankingText(rankingText);
         ranking.setVisible(true);
+    }
+
+    public static void insertRanking(String name, String score) {
+        String url = "jdbc:mysql://localhost:3306/ToTheMoon";
+        String userName = "root";
+        String password = "mirim";
+
+        try {
+            Connection connection = DriverManager.getConnection(url, userName, password);
+            Statement statement = connection.createStatement();
+            String query = "INSERT INTO ranking (playerID, score) VALUES ('" + name + "', '" + score + "')";
+            statement.executeUpdate(query);
+
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
