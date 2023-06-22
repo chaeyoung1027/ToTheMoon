@@ -76,6 +76,8 @@ public class SpacePart extends JFrame implements KeyListener {
 
     private boolean collisionDetectionEnabled = true;   // 충돌 처리 활성화 유무
 
+    private boolean gameEnded = false;
+
     private int score;
 
     public SpacePart(int score) {
@@ -304,7 +306,9 @@ public class SpacePart extends JFrame implements KeyListener {
         gameTimer.stop();
         imageTimer.stop();
         imageTimer.stop();
-        obstacleTimer.stop();
+        if (obstacleTimer != null) {
+            obstacleTimer.stop();
+        }
         itemTimer.stop();
         hpDecreaseTimer.stop();
         routeTimer.stop();

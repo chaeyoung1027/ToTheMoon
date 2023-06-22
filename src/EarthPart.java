@@ -167,7 +167,7 @@ public class EarthPart extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
         // 주기적으로 업데이트 메서드 호출
-        Timer timer = new Timer(200, e -> {
+        Timer timer = new Timer(15, e -> {
             try {
                 update();
             } catch (InterruptedException ex) {
