@@ -32,7 +32,7 @@ public class ToTheMoonDB {
         ranking.setVisible(true);
     }
 
-    public static void insertRanking(String name, String score) {
+    public static void insertOrUpdateScore(String name, int score) {
         String url = "jdbc:mysql://localhost:3306/ToTheMoon";
         String userName = "root";
         String password = "mirim";
@@ -40,9 +40,22 @@ public class ToTheMoonDB {
         try {
             Connection connection = DriverManager.getConnection(url, userName, password);
             Statement statement = connection.createStatement();
-            String query = "INSERT INTO ranking (playerID, score) VALUES ('" + name + "', '" + score + "')";
-            statement.executeUpdate(query);
 
+            // 이름이 이미 존재하는지 확인
+            String selectQuery = "SELECT * FROM ranking WHERE playerID = '" + name + "'";
+            ResultSet resultSet = statement.executeQuery(selectQuery);
+
+            if (resultSet.next()) {
+                // 이미 존재하는 이름인 경우 update
+                String updateQuery = "UPDATE ranking SET score = " + score + " WHERE playerID = '" + name + "'";
+                statement.executeUpdate(updateQuery);
+            } else {
+                // 존재하지 않는 이름인 경우 insert
+                String insertQuery = "INSERT INTO ranking (playerID, score) VALUES ('" + name + "', " + score + ")";
+                statement.executeUpdate(insertQuery);
+            }
+
+            resultSet.close();
             statement.close();
             connection.close();
         } catch (SQLException e) {

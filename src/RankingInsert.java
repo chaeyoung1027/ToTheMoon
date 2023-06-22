@@ -11,16 +11,12 @@ public class RankingInsert extends JFrame {
     private Image background = new ImageIcon(getClass().getResource("img/RankingInsertBackground.png")).getImage();
 
     private JTextField nameField;
-    private JTextField scoreField;
     private JButton okButton;
 
     public static int score;
 
     public RankingInsert(int score) {
         this.score = score;
-    }
-
-    public RankingInsert() {
         setUndecorated(true);
         setSize(1920, 1080);
         setVisible(true);
@@ -54,13 +50,13 @@ public class RankingInsert extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String name = nameField.getText();
-                String score = scoreField.getText();
 
-                ToTheMoonDB.insertRanking(name, score);
+                ToTheMoonDB.insertOrUpdateScore(name, score);
 
                 // Open the Ranking page and close the RankingInsert page
-                new Ranking();
+                ToTheMoonDB.loadRanking();  // Refresh the ranking
                 dispose();
+                setVisible(false);
             }
         });
         add(okButton);
@@ -71,7 +67,9 @@ public class RankingInsert extends JFrame {
         screenGraphic = screenImage.getGraphics();
         screenDraw(screenGraphic);
         g.drawImage(screenImage, 0, 0, null);
-        g.drawString(Integer.toString(score), 500, 600);
+        g.setFont(new Font("맑은 고딕", Font.PLAIN, 50));
+        g.setColor(Color.black);
+        g.drawString(Integer.toString(score), 930, 570);
     }
 
     public void screenDraw(Graphics g) {

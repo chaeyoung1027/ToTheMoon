@@ -8,11 +8,6 @@ public class Ranking extends JFrame {
     private Image background = new ImageIcon(getClass().getResource("img/RankingBackground.png")).getImage();
     private String rankingText = ""; // 랭킹 정보를 저장할 변수
 
-    public static int score;
-
-    public Ranking(int score) {
-        this.score = score;
-    }
 
     public Ranking() {
         setUndecorated(true);
