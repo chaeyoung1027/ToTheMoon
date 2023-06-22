@@ -60,7 +60,6 @@ public class EarthGameOver extends JFrame {
             @Override
             public void mousePressed(MouseEvent e) {
                 new ToTheMoon();    // 다시시작
-                setVisible(false);
             }
         });
         add(GoMainButton);

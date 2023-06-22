@@ -41,8 +41,8 @@ public class Ranking extends JFrame {
             }
             @Override
             public void mousePressed(MouseEvent e) {
-                setVisible(false);
-                new ToTheMoon();    // 홈 화  면으로 넘어가기
+                new ToTheMoon();
+                setVisible(false); // 홈 화  면으로 넘어가기
             }
         });
         add(HomeJButton);
@@ -63,7 +63,7 @@ public class Ranking extends JFrame {
 
         // 랭킹 정보를 그림
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 46));
+        g.setFont(new Font("맑은 고딕", Font.BOLD, 46));
         String[] rankingLines = rankingText.split("\n");
         int y = 320; // 시작 y 좌표
         for (String line : rankingLines) {
