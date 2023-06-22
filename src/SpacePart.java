@@ -76,10 +76,11 @@ public class SpacePart extends JFrame implements KeyListener {
 
     private boolean collisionDetectionEnabled = true;   // 충돌 처리 활성화 유무
 
-    private int score;
+    public static int score;
 
     public SpacePart(int score) {
         this.score = score;
+        //System.out.println(score);
     }
 
     public SpacePart() {
@@ -124,6 +125,7 @@ public class SpacePart extends JFrame implements KeyListener {
                     gameTimer.stop();
                     collisionDetectionEnabled = false;  // 충돌 감지 비활성화
                     // 게임 클리어 처리 - - -
+                    RankingInsert.score = score;
                     System.out.println("클리어");
                     setVisible(false);
                 }
@@ -488,7 +490,8 @@ public class SpacePart extends JFrame implements KeyListener {
         }
 
         //점수 띄우기
-        g.drawString(Integer.toString(score), 300, 500);
+        System.out.println(score);
+        g.drawString(Integer.toString(score), 900, 100);
 
     }
 

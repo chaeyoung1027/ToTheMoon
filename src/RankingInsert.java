@@ -14,6 +14,12 @@ public class RankingInsert extends JFrame {
     private JTextField scoreField;
     private JButton okButton;
 
+    public static int score;
+
+    public RankingInsert(int score) {
+        this.score = score;
+    }
+
     public RankingInsert() {
         setUndecorated(true);
         setSize(1920, 1080);
@@ -28,13 +34,6 @@ public class RankingInsert extends JFrame {
         nameField.setFont(new Font("맑은 고딕", Font.PLAIN, 40));
         nameField.setFont(nameField.getFont().deriveFont(Font.PLAIN));
         add(nameField);
-
-        scoreField = new JTextField();
-        scoreField.setBorder(null);
-        scoreField.setBounds(900, 500, 340, 50);
-        scoreField.setFont(new Font("맑은 고딕", Font.PLAIN, 40));
-        scoreField.setFont(scoreField.getFont().deriveFont(Font.PLAIN));
-        add(scoreField);
 
         okButton = new JButton(new ImageIcon(getClass().getResource("img/RankingOKButton.png")));
         okButton.setBounds(885, 630, 150, 88);
@@ -72,6 +71,7 @@ public class RankingInsert extends JFrame {
         screenGraphic = screenImage.getGraphics();
         screenDraw(screenGraphic);
         g.drawImage(screenImage, 0, 0, null);
+        g.drawString(Integer.toString(score), 500, 600);
     }
 
     public void screenDraw(Graphics g) {
@@ -81,6 +81,6 @@ public class RankingInsert extends JFrame {
     }
 
     public static void main(String[] args) {
-        new RankingInsert();
+        new RankingInsert(300);
     }
 }
