@@ -6,12 +6,12 @@ public class ToTheMoonDB {
         String userName = "root";
         String password = "mirim";
 
-        String rankingText = ""; // 랭킹 정보를 저장할 변수
+        String rankingText = "";
 
         try {
             Connection connection = DriverManager.getConnection(url, userName, password);
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM ranking order by score desc");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM ranking ORDER BY score DESC");
 
             int rank = 1;
             while(resultSet.next()){
@@ -27,9 +27,39 @@ public class ToTheMoonDB {
             e.printStackTrace();
         }
 
-        // Ranking 객체 생성 및 랭킹 정보 설정
         Ranking ranking = new Ranking();
         ranking.setRankingText(rankingText);
         ranking.setVisible(true);
+    }
+
+    public static void insertOrUpdateScore(String name, int score) {
+        String url = "jdbc:mysql://localhost:3306/ToTheMoon";
+        String userName = "root";
+        String password = "mirim";
+
+        try {
+            Connection connection = DriverManager.getConnection(url, userName, password);
+            Statement statement = connection.createStatement();
+
+            // 이름이 이미 존재하는지 확인
+            String selectQuery = "SELECT * FROM ranking WHERE playerID = '" + name + "'";
+            ResultSet resultSet = statement.executeQuery(selectQuery);
+
+            if (resultSet.next()) {
+                // 이미 존재하는 이름인 경우 update
+                String updateQuery = "UPDATE ranking SET score = " + score + " WHERE playerID = '" + name + "'";
+                statement.executeUpdate(updateQuery);
+            } else {
+                // 존재하지 않는 이름인 경우 insert
+                String insertQuery = "INSERT INTO ranking (playerID, score) VALUES ('" + name + "', " + score + ")";
+                statement.executeUpdate(insertQuery);
+            }
+
+            resultSet.close();
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

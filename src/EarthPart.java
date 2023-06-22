@@ -66,7 +66,7 @@ public class EarthPart extends JFrame {
     private int locX = 670;
     private boolean collisionDetectionEnabled = true;   // 충돌 처리 활성화 유무
     //점수 초기화
-    int score = 100000;
+    private int score = 100000;
 
     public EarthPart() {
         setUndecorated(true);
@@ -134,14 +134,15 @@ public class EarthPart extends JFrame {
                 repaint();
 
                 elapsedTime += 10; // 10밀리초마다 경과 시간 증가
-                score -= 10;
+                score -= 1;
 
                 // 경과 시간에 따른 게임 클리어 처리
-                if (elapsedTime >= 25000) {
+                if (elapsedTime >= 16500) {
                     collisionDetectionEnabled = false;
                     gameTimer.stop();
                     // 게임 클리어 처리 - - -
                     System.out.println("클리어");
+                    SpacePart.score = score+(playerHeart*50);
                     new SpaceRule();
                     setVisible(false);
                 }
@@ -184,7 +185,7 @@ public class EarthPart extends JFrame {
             int bgWidth = earthBackground.getWidth(null);
             int panelWidth = getWidth();
             backgroundX -= backgroundSpeed; // 배경의 위치 업데이트
-            if (backgroundX < -bgWidth) {
+            if (backgroundX < -bgWidth){
                 backgroundX = 0; // 배경이 화면 밖으로 나가면 위치 초기화
             }
             g.drawImage(earthBackground, backgroundX, 0, null);
@@ -255,15 +256,19 @@ public class EarthPart extends JFrame {
             g.drawImage(route, 700,870, null);
             g.drawImage(rabbit_face, locX, 950, null);
 
-            //점수 띄우기
-            g.drawString(Integer.toString(y), 300, 500);
+            //점수 띄우기 - 10 단위로 보이게
+            g.setFont(new Font("맑은고딕", Font.BOLD, 46));
+            g.setColor(Color.WHITE);
+            //g.drawString();
+            g.drawString("점수 : "+Integer.toString(score/10*10), 1550, 100);
 
             //게임오버 조건 : 범위 벗어남, 목숨 0
             int rabbitLeftEdge = rabbitX - 10;
             int rabbitRightEdge = rabbitX + scaledWidth;
-            if (rabbitLeftEdge + 200 < 0 || rabbitRightEdge > getWidth()||playerHeart==0) {
+            if (rabbitLeftEdge + 200 < 0 || rabbitRightEdge > getWidth() || playerHeart == 0) {
                 System.out.println("게임 오버");
                 collisionDetectionEnabled = false;
+                gameTimer.stop();
                 routeTimer.stop();
                 new EarthGameOver();
                 setVisible(false);
@@ -442,7 +447,6 @@ public class EarthPart extends JFrame {
         }
     }
 
-
     // 토끼 이미지 배열 반환
     private Image[] getRabbitImages() {
         if (isMovingLeft) {
@@ -469,8 +473,6 @@ public class EarthPart extends JFrame {
             return rightRabbitSliding;
         }
     }
-
-    SpacePart s = new SpacePart(score); //점수 넘겨주기
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
