@@ -33,7 +33,7 @@ public class ToTheMoonDB {
     }
 
     public static void insertOrUpdateScore(String name, int score) {
-        String url = "jdbc:mysql://localhost:3306/ToTheMoon";
+        String url = "jdbc:mysql://localhost:3306/tothemoon";
         String userName = "root";
         String password = "mirim";
 

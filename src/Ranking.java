@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Ranking extends JFrame {
     private Image screenImage;
@@ -7,6 +9,12 @@ public class Ranking extends JFrame {
 
     private Image background = new ImageIcon(getClass().getResource("img/RankingBackground.png")).getImage();
     private String rankingText = ""; // 랭킹 정보를 저장할 변수
+
+    // 처음으로 버튼
+    private final Image HomeButtonImage = new ImageIcon(ToTheMoon.class.getResource("img/Earth_home.png")).getImage();
+    private ImageIcon HomeButton = new ImageIcon(HomeButtonImage);
+
+    private JButton HomeJButton = new JButton(HomeButton);
 
 
     public Ranking() {
@@ -16,6 +24,28 @@ public class Ranking extends JFrame {
         setBackground(new Color(0, 0, 0, 0));
         setLocationRelativeTo(null);
         setLayout(null);
+
+        // 처음으로 버튼 생성
+        HomeJButton.setBounds(62, 945, 270, 70);
+        HomeJButton.setBorderPainted(false);
+        HomeJButton.setContentAreaFilled(false);
+        HomeJButton.setFocusPainted(false);
+        HomeJButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+            @Override
+            public void mousePressed(MouseEvent e) {
+                new ToTheMoon();
+                setVisible(false); // 홈 화  면으로 넘어가기
+            }
+        });
+        add(HomeJButton);
     }
 
     // 그리는 함수
@@ -33,7 +63,7 @@ public class Ranking extends JFrame {
 
         // 랭킹 정보를 그림
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 46));
+        g.setFont(new Font("맑은 고딕", Font.BOLD, 46));
         String[] rankingLines = rankingText.split("\n");
         int y = 320; // 시작 y 좌표
         for (String line : rankingLines) {
