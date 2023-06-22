@@ -126,30 +126,31 @@ public class EarthPart extends JFrame {
         addKeyListener(new MyKeyListener());
         setContentPane(new MyPanel());
 
-        gameTimer = new Timer(10, new ActionListener() {
-            private int elapsedTime = 0; // 경과 시간(밀리초)
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                repaint();
-
-                elapsedTime += 10; // 10밀리초마다 경과 시간 증가
-                score -= 1;
-
-                // 경과 시간에 따른 게임 클리어 처리
-                if (elapsedTime >= 16500) {
-                    collisionDetectionEnabled = false;
-                    gameTimer.stop();
-                    // 게임 클리어 처리 - - -
-                    System.out.println("클리어");
-                    SpacePart.score = score+(playerHeart*50);
-                    new SpaceRule();
-                    setVisible(false);
-                }
-            }
-        });
-
-        gameTimer.start();
+//        gameTimer = new Timer(10, new ActionListener() {
+//            private int elapsedTime = 0; // 경과 시간(밀리초)
+//
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                repaint();
+//
+//                elapsedTime += 10; // 10밀리초마다 경과 시간 증가
+//                score -= 1;
+//
+//                // 경과 시간에 따른 게임 클리어 처리
+//                if (elapsedTime >= 16500) {
+//                    collisionDetectionEnabled = false;
+//                    gameTimer.stop();
+//                    // 게임 클리어 처리 - - -
+//                    System.out.println("클리어");
+//                    SpacePart.score = score+(playerHeart*50);
+//                    new SpaceRule();
+//                    setVisible(false);
+//                }
+//            }
+//        });
+//
+//        gameTimer.start();
 
         // 위치바 이동 타이머 설정
         routeTimer = new Timer(100, new ActionListener() {
@@ -165,17 +166,61 @@ public class EarthPart extends JFrame {
 
     }
     private void init(){
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setVisible(true);
+        // 게임 타이머가 이미 등록되었는지 확인
+        if (gameTimer == null || !gameTimer.isRunning()) {
+            // 게임 타이머 생성 및 등록
+            gameTimer = new Timer(10, new ActionListener() {
+                private int elapsedTime = 0; // 경과 시간(밀리초)
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    repaint();
+                    try {
+                        update();
+                    } catch (InterruptedException ex) {
+                        throw new RuntimeException(ex);
+                    }
+
+                    //게임오버 조건 : 범위 벗어남, 목숨 0
+                    int rabbitLeftEdge = rabbitX - 10;
+                    int rabbitRightEdge = rabbitX + scaledWidth;
+                    if (rabbitLeftEdge + 200 < 0 || rabbitRightEdge > getWidth() || playerHeart == 0) {
+                        System.out.println("게임 오버");
+                        collisionDetectionEnabled = false;
+                        gameTimer.stop();
+                        routeTimer.stop();
+                        new EarthGameOver();
+                        setVisible(false);
+                    }
+
+                    elapsedTime += 10; // 10밀리초마다 경과 시간 증가
+                    score -= 1;
+
+                    // 경과 시간에 따른 게임 클리어 처리
+                    if (elapsedTime >= 16500) {
+                        collisionDetectionEnabled = false;
+                        gameTimer.stop();
+                        // 게임 클리어 처리 - - -
+                        System.out.println("클리어");
+                        SpacePart.score = score+(playerHeart*50);
+                        new SpaceRule();
+                        setVisible(false);
+                    }
+                }
+            });
+            gameTimer.start();
+        }
+//        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        this.setVisible(true);
         // 주기적으로 업데이트 메서드 호출
-        Timer timer = new Timer(15, e -> {
-            try {
-                update();
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
-        timer.start();
+//        Timer timer = new Timer(15, e -> {
+//            try {
+//                update();
+//            } catch (InterruptedException ex) {
+//                throw new RuntimeException(ex);
+//            }
+//        });
+//        timer.start();
+
     }
 
     private class MyPanel extends JPanel {
@@ -262,17 +307,6 @@ public class EarthPart extends JFrame {
             //g.drawString();
             g.drawString("점수 : "+Integer.toString(score/10*10), 1550, 100);
 
-            //게임오버 조건 : 범위 벗어남, 목숨 0
-            int rabbitLeftEdge = rabbitX - 10;
-            int rabbitRightEdge = rabbitX + scaledWidth;
-            if (rabbitLeftEdge + 200 < 0 || rabbitRightEdge > getWidth() || playerHeart == 0) {
-                System.out.println("게임 오버");
-                collisionDetectionEnabled = false;
-                gameTimer.stop();
-                routeTimer.stop();
-                new EarthGameOver();
-                setVisible(false);
-            }
 
         }
     }
