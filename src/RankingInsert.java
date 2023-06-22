@@ -14,9 +14,11 @@ public class RankingInsert extends JFrame {
     private JButton okButton;
 
     public static int score;
-
     public RankingInsert(int score) {
         this.score = score;
+    }
+
+    public RankingInsert() {
         setUndecorated(true);
         setSize(1920, 1080);
         setVisible(true);
@@ -79,6 +81,6 @@ public class RankingInsert extends JFrame {
     }
 
     public static void main(String[] args) {
-        new RankingInsert(300);
+        new RankingInsert();
     }
 }

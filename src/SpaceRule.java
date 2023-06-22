@@ -194,7 +194,8 @@ class SpaceRule3 extends JFrame {
             }
             @Override
             public void mousePressed(MouseEvent e) {
-                new SpacePart();    // 게임 시작
+                SpacePart spacePart = new SpacePart();
+                spacePart.startGame();
                 setVisible(false);
             }
         });

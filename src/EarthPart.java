@@ -142,7 +142,6 @@ public class EarthPart extends JFrame {
                     gameTimer.stop();
                     // 게임 클리어 처리 - - -
                     System.out.println("클리어");
-                    // SpacePart s = new SpacePart(score); //점수 넘겨주기
                     SpacePart.score = score+(playerHeart*50);
                     new SpaceRule();
                     setVisible(false);
@@ -258,12 +257,15 @@ public class EarthPart extends JFrame {
             g.drawImage(rabbit_face, locX, 950, null);
 
             //점수 띄우기 - 10 단위로 보이게
-            g.drawString(Integer.toString(score/10*10), 900, 100);
+            g.setFont(new Font("맑은고딕", Font.BOLD, 46));
+            g.setColor(Color.WHITE);
+            //g.drawString();
+            g.drawString("점수 : "+Integer.toString(score/10*10), 1550, 100);
 
             //게임오버 조건 : 범위 벗어남, 목숨 0
             int rabbitLeftEdge = rabbitX - 10;
             int rabbitRightEdge = rabbitX + scaledWidth;
-            if (rabbitLeftEdge + 200 < 0 || rabbitRightEdge > getWidth()||playerHeart==0) {
+            if (rabbitLeftEdge + 200 < 0 || rabbitRightEdge > getWidth() || playerHeart == 0) {
                 System.out.println("게임 오버");
                 collisionDetectionEnabled = false;
                 gameTimer.stop();
