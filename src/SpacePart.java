@@ -62,8 +62,14 @@ public class SpacePart extends JFrame implements KeyListener {
     public static int score;
 
     //배경 음악
-    private static Clip clip;
+    private static Clip backgroundMusicClip;
     private static String bgmFilePath = "audio/SpacePartMusic.wav";
+
+    //효과음
+    private static Clip collisionSoundClip;
+    private static Clip itemCollisionSoundClip;
+    private static String collisionSoundFilePath = "audio/ShipCollision.wav";
+    private static String itemCollisionSoundFilePath = "audio/ShipItemCollision.wav";
 
     public SpacePart(int score) {
         this.score = score;
@@ -242,6 +248,7 @@ public class SpacePart extends JFrame implements KeyListener {
             Obstacle obstacle = obstacleList.get(i);
             Rectangle obstacleRect = new Rectangle(obstacle.x, obstacle.y, obstacle.getWidth()-20, obstacle.getHeight()-30);
             if(shipRect.intersects(obstacleRect)) {
+                playCollisionSound(collisionSoundFilePath);
                 hp -= obstacle.getHPDecrease();
                 score -= 100;
                 obstacleList.remove(i);
@@ -256,6 +263,7 @@ public class SpacePart extends JFrame implements KeyListener {
             Item item = itemList.get(i);
             Rectangle itemRect = new Rectangle(item.x, item.y, item.getWidth(), item.getHeight());
             if (shipRect.intersects(itemRect)) {
+                ItemCollisionSound(itemCollisionSoundFilePath);
                 score += 100;
                 if(hp > 250) {
                     hp += 0;
@@ -497,25 +505,75 @@ public class SpacePart extends JFrame implements KeyListener {
             DataLine.Info info = new DataLine.Info(Clip.class, audioFormat);
 
             // 데이터 라인 생성
-            clip = (Clip) AudioSystem.getLine(info);
+            backgroundMusicClip = (Clip) AudioSystem.getLine(info);
 
             // 데이터 라인 열기
-            clip.open(audioInputStream);
+            backgroundMusicClip.open(audioInputStream);
 
             // 무한 반복 재생
-            clip.loop(Clip.LOOP_CONTINUOUSLY);
+            backgroundMusicClip.loop(Clip.LOOP_CONTINUOUSLY);
 
             // 재생 시작
-            clip.start();
+            backgroundMusicClip.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public static void stopBackgroundMusic() {
-        if (clip != null && clip.isRunning()) {
-            clip.stop();
-            clip.close();
+        if (backgroundMusicClip != null && backgroundMusicClip.isRunning()) {
+            backgroundMusicClip.stop();
+            backgroundMusicClip.close();
+        }
+    }
+
+    public static void playCollisionSound(String filePath) {
+        try {
+            // 효과음 파일 로딩
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(
+                    ToTheMoon.class.getResourceAsStream(filePath));
+
+            // 오디오 포맷 가져오기
+            AudioFormat audioFormat = audioInputStream.getFormat();
+
+            // 데이터 라인 정보 생성
+            DataLine.Info info = new DataLine.Info(Clip.class, audioFormat);
+
+            // 데이터 라인 생성
+            collisionSoundClip = (Clip) AudioSystem.getLine(info);
+
+            // 데이터 라인 열기
+            collisionSoundClip.open(audioInputStream);
+
+            // 재생 시작
+            collisionSoundClip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void ItemCollisionSound(String filePath) {
+        try {
+            // 효과음 파일 로딩
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(
+                    ToTheMoon.class.getResourceAsStream(filePath));
+
+            // 오디오 포맷 가져오기
+            AudioFormat audioFormat = audioInputStream.getFormat();
+
+            // 데이터 라인 정보 생성
+            DataLine.Info info = new DataLine.Info(Clip.class, audioFormat);
+
+            // 데이터 라인 생성
+            itemCollisionSoundClip = (Clip) AudioSystem.getLine(info);
+
+            // 데이터 라인 열기
+            itemCollisionSoundClip.open(audioInputStream);
+
+            // 재생 시작
+            itemCollisionSoundClip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

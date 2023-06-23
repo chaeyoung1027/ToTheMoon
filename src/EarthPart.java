@@ -69,8 +69,13 @@ public class EarthPart extends JFrame {
     //점수 초기화
     private int score = 100000;
     //배경 음악
-    private static Clip clip;
+    private static Clip backgroundMusicClip;
     private static String bgmFilePath = "audio/EarthPartMusic.wav";
+    //효과음
+    private static Clip jumpSoundClip;
+    private static Clip collisionSoundClip;
+    String jumpSoundFilePath = "audio/RabbitJumpSound.wav";
+    String collisionSoundFilePath = "audio/RabbitCollision.wav";
 
     public EarthPart() {
         setUndecorated(true);
@@ -334,6 +339,7 @@ public class EarthPart extends JFrame {
                 isMovingLeft = true;
             } else if (e.getKeyCode() == KeyEvent.VK_SPACE && !isJumping) {
                 isJumping = true;
+                playJumpSound(jumpSoundFilePath);
                 new Thread(() -> jump()).start();
             } else if (e.getKeyCode() == KeyEvent.VK_DOWN && !isJumping) {
                 isSliding = true;
@@ -469,6 +475,7 @@ public class EarthPart extends JFrame {
             if (rabbitRect.intersects(obstacleRect) && !isCollisionDetected) {
                 // 충돌 발생! 처리 로직을 여기에 작성
                 System.out.println("토끼와 장애물이 충돌했습니다!");
+                playCollisionSound(collisionSoundFilePath);
 
                 // 충돌 감지
                 playerHeart -= 1;
@@ -531,25 +538,75 @@ public class EarthPart extends JFrame {
             DataLine.Info info = new DataLine.Info(Clip.class, audioFormat);
 
             // 데이터 라인 생성
-            clip = (Clip) AudioSystem.getLine(info);
+            backgroundMusicClip = (Clip) AudioSystem.getLine(info);
 
             // 데이터 라인 열기
-            clip.open(audioInputStream);
+            backgroundMusicClip.open(audioInputStream);
 
             // 무한 반복 재생
-            clip.loop(Clip.LOOP_CONTINUOUSLY);
+            backgroundMusicClip.loop(Clip.LOOP_CONTINUOUSLY);
 
             // 재생 시작
-            clip.start();
+            backgroundMusicClip.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public static void stopBackgroundMusic() {
-        if (clip != null && clip.isRunning()) {
-            clip.stop();
-            clip.close();
+        if (backgroundMusicClip != null && backgroundMusicClip.isRunning()) {
+            backgroundMusicClip.stop();
+            backgroundMusicClip.close();
+        }
+    }
+
+    public static void playJumpSound(String filePath) {
+        try {
+            // 효과음 파일 로딩
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(
+                    ToTheMoon.class.getResourceAsStream(filePath));
+
+            // 오디오 포맷 가져오기
+            AudioFormat audioFormat = audioInputStream.getFormat();
+
+            // 데이터 라인 정보 생성
+            DataLine.Info info = new DataLine.Info(Clip.class, audioFormat);
+
+            // 데이터 라인 생성
+            jumpSoundClip = (Clip) AudioSystem.getLine(info);
+
+            // 데이터 라인 열기
+            jumpSoundClip.open(audioInputStream);
+
+            // 재생 시작
+            jumpSoundClip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void playCollisionSound(String filePath) {
+        try {
+            // 효과음 파일 로딩
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(
+                    ToTheMoon.class.getResourceAsStream(filePath));
+
+            // 오디오 포맷 가져오기
+            AudioFormat audioFormat = audioInputStream.getFormat();
+
+            // 데이터 라인 정보 생성
+            DataLine.Info info = new DataLine.Info(Clip.class, audioFormat);
+
+            // 데이터 라인 생성
+            collisionSoundClip = (Clip) AudioSystem.getLine(info);
+
+            // 데이터 라인 열기
+            collisionSoundClip.open(audioInputStream);
+
+            // 재생 시작
+            collisionSoundClip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
