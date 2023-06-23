@@ -1,3 +1,4 @@
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -6,7 +7,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.TimerTask;
+import javax.sound.sampled.*;
 
 public class EarthPart extends JFrame {
     //이미지
@@ -67,6 +68,9 @@ public class EarthPart extends JFrame {
     private boolean collisionDetectionEnabled = true;   // 충돌 처리 활성화 유무
     //점수 초기화
     private int score = 100000;
+    //배경 음악
+    private static Clip clip;
+    private static String bgmFilePath = "audio/EarthPartMusic.wav";
 
     public EarthPart() {
         setUndecorated(true);
@@ -125,6 +129,8 @@ public class EarthPart extends JFrame {
         leftRabbitSliding = leftRabbitSliding.getScaledInstance(slideScaledWidth, slideScaledHeight, Image.SCALE_SMOOTH);
         addKeyListener(new MyKeyListener());
         setContentPane(new MyPanel());
+
+        playBackgroundMusic(bgmFilePath);
 
 
 //        gameTimer = new Timer(10, new ActionListener() {
@@ -188,6 +194,8 @@ public class EarthPart extends JFrame {
                         collisionDetectionEnabled = false;
                         gameTimer.stop();
                         routeTimer.stop();
+                        // 음악 멈추기
+                        stopBackgroundMusic();
                         new EarthGameOver();
                         setVisible(false);
                     }
@@ -201,6 +209,8 @@ public class EarthPart extends JFrame {
                         gameTimer.stop();
                         // 게임 클리어 처리 - - -
                         System.out.println("클리어");
+                        // 음악 멈추기
+                        stopBackgroundMusic();
                         SpacePart.score = score+(playerHeart*50);
                         new SpaceRule();
                         setVisible(false);
@@ -505,6 +515,41 @@ public class EarthPart extends JFrame {
             return leftRabbitSliding;
         } else {
             return rightRabbitSliding;
+        }
+    }
+
+    public static void playBackgroundMusic(String filePath) {
+        try {
+            // 배경음악 파일 로딩
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(
+                    ToTheMoon.class.getResourceAsStream(filePath));
+
+            // 오디오 포맷 가져오기
+            AudioFormat audioFormat = audioInputStream.getFormat();
+
+            // 데이터 라인 정보 생성
+            DataLine.Info info = new DataLine.Info(Clip.class, audioFormat);
+
+            // 데이터 라인 생성
+            clip = (Clip) AudioSystem.getLine(info);
+
+            // 데이터 라인 열기
+            clip.open(audioInputStream);
+
+            // 무한 반복 재생
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+
+            // 재생 시작
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void stopBackgroundMusic() {
+        if (clip != null && clip.isRunning()) {
+            clip.stop();
+            clip.close();
         }
     }
 
