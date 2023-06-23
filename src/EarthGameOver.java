@@ -46,8 +46,8 @@ public class EarthGameOver extends JFrame {
             @Override
             public void mousePressed(MouseEvent e) {
                 stopBackgroundMusic();
-                new EarthPart();    // 다시시작
                 setVisible(false);
+                new EarthPart();    // 다시시작
             }
         });
         add(retryButton);
@@ -68,6 +68,7 @@ public class EarthGameOver extends JFrame {
             @Override
             public void mousePressed(MouseEvent e) {
                 stopBackgroundMusic();
+                setVisible(false);
                 new ToTheMoon();    // 다시시작
             }
         });
