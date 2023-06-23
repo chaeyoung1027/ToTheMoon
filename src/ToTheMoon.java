@@ -10,6 +10,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import javax.sound.sampled.*;
+
 public class ToTheMoon extends JFrame {
     private Image mainBackground;
 
@@ -25,6 +27,11 @@ public class ToTheMoon extends JFrame {
     private JButton RuleButton;
     private JButton ExitButton;
 
+    // 배경음악
+    private static Clip clip;
+    private static boolean isMusicPlaying = true;
+    private static String bgmFilePath = "audio/BackgroundMusic.wav";
+
     public ToTheMoon() {
         setUndecorated(true);                           //프레임 바 제거
         setVisible(true);                               //프레임 표기
@@ -32,6 +39,8 @@ public class ToTheMoon extends JFrame {
         setLocationRelativeTo(null);                    //화면 중앙에 위치하도록 설정
         setBackground(new Color(0, 0, 0, 0));//배경을 투명으로 지정
         setLayout(null);                                //컴포넌트를 수동으로 배치하기 위한 레이아웃 매니저 null
+
+        playBackgroundMusic(bgmFilePath);
 
         //이미지아이콘 추가
         mainBackground = new ImageIcon(getClass().getResource("img/MainBackground.png")).getImage();
@@ -72,6 +81,9 @@ public class ToTheMoon extends JFrame {
                 // 이미지 크기 조정
                 scaledStartButtonIcon = new ImageIcon(originalStartButtonIcon.getImage().getScaledInstance(pressedWidth, pressedHeight, Image.SCALE_SMOOTH));
                 StartButton.setIcon(scaledStartButtonIcon);
+
+                // 음악 멈추기
+                stopBackgroundMusic();
 
                 //시작
                 new EarthPart();
@@ -189,6 +201,41 @@ public class ToTheMoon extends JFrame {
         setTitle("To The Moon");
         setContentPane(contentPane);
         setVisible(true);
+    }
+
+    public static void playBackgroundMusic(String filePath) {
+        try {
+            // 배경음악 파일 로딩
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(
+                    ToTheMoon.class.getResourceAsStream(filePath));
+
+            // 오디오 포맷 가져오기
+            AudioFormat audioFormat = audioInputStream.getFormat();
+
+            // 데이터 라인 정보 생성
+            DataLine.Info info = new DataLine.Info(Clip.class, audioFormat);
+
+            // 데이터 라인 생성
+            clip = (Clip) AudioSystem.getLine(info);
+
+            // 데이터 라인 열기
+            clip.open(audioInputStream);
+
+            // 무한 반복 재생
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+
+            // 재생 시작
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void stopBackgroundMusic() {
+        if (clip != null && clip.isRunning()) {
+            clip.stop();
+            clip.close();
+        }
     }
 
     public static void main(String[] args) {
