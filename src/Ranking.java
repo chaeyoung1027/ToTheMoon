@@ -1,3 +1,4 @@
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -16,6 +17,9 @@ public class Ranking extends JFrame {
 
     private JButton HomeJButton = new JButton(HomeButton);
 
+    //배경 음악
+    private static Clip clip;
+    private static String bgmFilePath = "audio/RankingMusic.wav";
 
     public Ranking() {
         setUndecorated(true);
@@ -24,6 +28,8 @@ public class Ranking extends JFrame {
         setBackground(new Color(0, 0, 0, 0));
         setLocationRelativeTo(null);
         setLayout(null);
+
+        playBackgroundMusic(bgmFilePath);
 
         // 처음으로 버튼 생성
         HomeJButton.setBounds(62, 945, 270, 70);
@@ -41,6 +47,7 @@ public class Ranking extends JFrame {
             }
             @Override
             public void mousePressed(MouseEvent e) {
+                stopBackgroundMusic();
                 setVisible(false);
                 new ToTheMoon(); // 홈 화  면으로 넘어가기
             }
@@ -84,6 +91,40 @@ public class Ranking extends JFrame {
 
         paintComponents(g);
         this.repaint();    // paint 함수로 돌아감
+    }
+    public static void playBackgroundMusic(String filePath) {
+        try {
+            // 배경음악 파일 로딩
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(
+                    ToTheMoon.class.getResourceAsStream(filePath));
+
+            // 오디오 포맷 가져오기
+            AudioFormat audioFormat = audioInputStream.getFormat();
+
+            // 데이터 라인 정보 생성
+            DataLine.Info info = new DataLine.Info(Clip.class, audioFormat);
+
+            // 데이터 라인 생성
+            clip = (Clip) AudioSystem.getLine(info);
+
+            // 데이터 라인 열기
+            clip.open(audioInputStream);
+
+            // 무한 반복 재생
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+
+            // 재생 시작
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void stopBackgroundMusic() {
+        if (clip != null && clip.isRunning()) {
+            clip.stop();
+            clip.close();
+        }
     }
 
     public static void main(String[] args) {

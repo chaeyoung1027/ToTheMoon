@@ -1,3 +1,4 @@
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -59,9 +60,13 @@ public class SpacePart extends JFrame implements KeyListener {
     Timer itemTimer;
     private boolean collisionDetectionEnabled = true;   // 충돌 처리 활성화 유무
     public static int score;
+
+    //배경 음악
+    private static Clip clip;
+    private static String bgmFilePath = "audio/SpacePartMusic.wav";
+
     public SpacePart(int score) {
         this.score = score;
-        //System.out.println(score);
     }
     public SpacePart() {
         setUndecorated(true);
@@ -71,6 +76,9 @@ public class SpacePart extends JFrame implements KeyListener {
         setLayout(null);
         setFocusable(true);
         setVisible(true);
+
+        playBackgroundMusic(bgmFilePath);
+
         gameTimer = new Timer(10, new ActionListener() {
             private int elapsedTime = 0; // 경과 시간(밀리초)
             private boolean isMoonFalling = false;
@@ -107,6 +115,7 @@ public class SpacePart extends JFrame implements KeyListener {
                     // 게임 클리어 처리 - - -
                     RankingInsert.score = score;
                     System.out.println("클리어");
+                    stopBackgroundMusic();
                     new RankingInsert();
                     setVisible(false);
                 }
@@ -266,6 +275,7 @@ public class SpacePart extends JFrame implements KeyListener {
         itemTimer.stop();
         hpDecreaseTimer.stop();
         routeTimer.stop();
+        stopBackgroundMusic();
         new SpaceGameOver();
         setVisible(false);
     }
@@ -471,6 +481,41 @@ public class SpacePart extends JFrame implements KeyListener {
             moveLeft = false;
         } else if (keyCode == KeyEvent.VK_RIGHT) {
             moveRight = false;
+        }
+    }
+
+    public static void playBackgroundMusic(String filePath) {
+        try {
+            // 배경음악 파일 로딩
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(
+                    ToTheMoon.class.getResourceAsStream(filePath));
+
+            // 오디오 포맷 가져오기
+            AudioFormat audioFormat = audioInputStream.getFormat();
+
+            // 데이터 라인 정보 생성
+            DataLine.Info info = new DataLine.Info(Clip.class, audioFormat);
+
+            // 데이터 라인 생성
+            clip = (Clip) AudioSystem.getLine(info);
+
+            // 데이터 라인 열기
+            clip.open(audioInputStream);
+
+            // 무한 반복 재생
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+
+            // 재생 시작
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void stopBackgroundMusic() {
+        if (clip != null && clip.isRunning()) {
+            clip.stop();
+            clip.close();
         }
     }
 
