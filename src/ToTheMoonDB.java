@@ -2,7 +2,7 @@ import java.sql.*;
 
 public class ToTheMoonDB {
     public static void loadRanking() {
-        String url = "jdbc:mysql://localhost:3306/ToTheMoon";
+        String url = "jdbc:mysql://localhost:3306/tothemoon";
         String userName = "root";
         String password = "mirim";
 
@@ -11,7 +11,7 @@ public class ToTheMoonDB {
         try {
             Connection connection = DriverManager.getConnection(url, userName, password);
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM ranking ORDER BY score DESC");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM ranking ORDER BY score DESC LIMIT 8");
 
             int rank = 1;
             while(resultSet.next()){
