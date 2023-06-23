@@ -40,6 +40,7 @@ public class ToTheMoon extends JFrame {
         setBackground(new Color(0, 0, 0, 0));//배경을 투명으로 지정
         setLayout(null);                                //컴포넌트를 수동으로 배치하기 위한 레이아웃 매니저 null
 
+        stopBackgroundMusic();
         playBackgroundMusic(bgmFilePath);
 
         //이미지아이콘 추가
