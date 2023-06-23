@@ -1,3 +1,4 @@
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -14,6 +15,10 @@ public class EarthGameOver extends JFrame {
     private final ImageIcon GoMainButtonImg = new ImageIcon(getClass().getResource("img/GoMain.png"));
     private JButton GoMainButton = new JButton( GoMainButtonImg);
 
+    //배경 음악
+    private static Clip clip;
+    private static String bgmFilePath = "audio/GameOverMusic.wav";
+
     public EarthGameOver() {
         setUndecorated(true);
         setSize(1920, 1080);
@@ -21,6 +26,8 @@ public class EarthGameOver extends JFrame {
         setBackground(new Color(0, 0, 0, 0));
         setLocationRelativeTo(null);
         setLayout(null);
+
+        playBackgroundMusic(bgmFilePath);
 
         //다시하기 버튼
         retryButton.setBounds(500, 700, 240, 105);
@@ -38,6 +45,7 @@ public class EarthGameOver extends JFrame {
             }
             @Override
             public void mousePressed(MouseEvent e) {
+                stopBackgroundMusic();
                 new EarthPart();    // 다시시작
                 setVisible(false);
             }
@@ -59,6 +67,7 @@ public class EarthGameOver extends JFrame {
             }
             @Override
             public void mousePressed(MouseEvent e) {
+                stopBackgroundMusic();
                 new ToTheMoon();    // 다시시작
             }
         });
@@ -77,6 +86,41 @@ public class EarthGameOver extends JFrame {
         g.drawImage(background , 0, 0, null);
         paintComponents(g);
         this.repaint();	// paint 함수로 돌아감
+    }
+
+    public static void playBackgroundMusic(String filePath) {
+        try {
+            // 배경음악 파일 로딩
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(
+                    ToTheMoon.class.getResourceAsStream(filePath));
+
+            // 오디오 포맷 가져오기
+            AudioFormat audioFormat = audioInputStream.getFormat();
+
+            // 데이터 라인 정보 생성
+            DataLine.Info info = new DataLine.Info(Clip.class, audioFormat);
+
+            // 데이터 라인 생성
+            clip = (Clip) AudioSystem.getLine(info);
+
+            // 데이터 라인 열기
+            clip.open(audioInputStream);
+
+            // 무한 반복 재생
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+
+            // 재생 시작
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void stopBackgroundMusic() {
+        if (clip != null && clip.isRunning()) {
+            clip.stop();
+            clip.close();
+        }
     }
 
     public static void main(String[] args) {
