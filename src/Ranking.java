@@ -41,8 +41,8 @@ public class Ranking extends JFrame {
             }
             @Override
             public void mousePressed(MouseEvent e) {
-                new ToTheMoon();
-                setVisible(false); // 홈 화  면으로 넘어가기
+                setVisible(false);
+                new ToTheMoon(); // 홈 화  면으로 넘어가기
             }
         });
         add(HomeJButton);
